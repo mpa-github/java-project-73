@@ -21,19 +21,19 @@ jobs:
         with:
           arguments: build
           gradle-version: 7.6.1
-          build-root-directory: app
+          #build-root-directory: */
 
-      - run: chmod +x app/gradlew
-      - run: make -C app build
-      - run: make -C app test
-      - run: make -C app lint
+      - run: chmod +x gradlew
+      - run: make build
+      - run: make test
+      - run: make lint
 
       - name: Test & publish code coverage
         uses: paambaati/codeclimate-action@v3.2.0
         # Set CC_TEST_REPORTER_ID as secret of your repository
         env:
           CC_TEST_REPORTER_ID: ${{secrets.CC_TEST_REPORTER_ID}}
-          JACOCO_SOURCE_PATH: "${{github.workspace}}/app/src/main/java"
+          JACOCO_SOURCE_PATH: "${{github.workspace}}/src/main/java"
         with:
           coverageCommand: make -C app test-report
-          coverageLocations: ${{github.workspace}}/app/build/reports/jacoco/test/jacocoTestReport.xml:jacoco
+          coverageLocations: ${{github.workspace}}/build/reports/jacoco/test/jacocoTestReport.xml:jacoco
