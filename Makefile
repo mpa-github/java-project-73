@@ -17,8 +17,8 @@ lint: # Check code style
 test-report: # Check code coverage
 	./gradlew jacocoTestReport
 
-run: # Run app
-	./build/install/app/bin/app
+run: # Run app in development
+	SPRING_PROFILES_ACTIVE=dev ./build/install/app/bin/app
 
-#migration: # Generate migrations
-#	./gradlew generateMigrations
+migration: # Generate migrations
+	./gradlew diffChangeLog
