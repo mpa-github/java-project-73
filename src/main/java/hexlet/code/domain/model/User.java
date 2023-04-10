@@ -1,4 +1,4 @@
-package hexlet.code.model;
+package hexlet.code.domain.model;
 
 import org.hibernate.annotations.CreationTimestamp;
 
