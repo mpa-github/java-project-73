@@ -5,6 +5,8 @@ import hexlet.code.domain.dto.UserRequestDTO;
 import hexlet.code.domain.dto.UserResponseDTO;
 import hexlet.code.domain.model.User;
 import hexlet.code.service.UserService;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -47,20 +49,22 @@ public class UserController {
     }
 
     @PostMapping(path = "/users")
-    public UserResponseDTO registerUser(@RequestBody @Valid UserRequestDTO userDTO) {
-        User createdUser = userService.createUser(userDTO);
+    public UserResponseDTO registerUser(@RequestBody @Valid UserRequestDTO dto) {
+        User createdUser = userService.createUser(dto);
         return userMapper.toUserResponseDTO(createdUser);
     }
 
     @PutMapping(path = "/users/{id}")
-    public UserResponseDTO updateUser(@RequestBody @Valid UserRequestDTO userDTO,
-                                      @PathVariable(name = "id") long id) {
-        User updatedUser = userService.updateUser(userDTO, id);
+    public UserResponseDTO updateUser(@RequestBody @Valid UserRequestDTO dto,
+                                      @PathVariable(name = "id") long id,
+                                      @AuthenticationPrincipal UserDetails userDetails) {
+        User updatedUser = userService.updateUser(id, dto, userDetails);
         return userMapper.toUserResponseDTO(updatedUser);
     }
 
     @DeleteMapping(path = "/users/{id}")
-    public void deleteUser(@PathVariable(name = "id") long id) {
-        userService.deleteUser(id);
+    public void deleteUser(@PathVariable(name = "id") long id,
+                           @AuthenticationPrincipal UserDetails userDetails) {
+        userService.deleteUser(id, userDetails);
     }
 }

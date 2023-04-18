@@ -1,20 +1,27 @@
 package hexlet.code.exception;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 import java.time.LocalDateTime;
 
 public class ApiErrorResponse {
 
-    private LocalDateTime localDateTime = LocalDateTime.now();
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy HH:mm:ss")
+    private LocalDateTime timestamp;
     private int statusCode;
     private String message;
     private String path;
 
-    public LocalDateTime getLocalDateTime() {
-        return localDateTime;
+    public ApiErrorResponse() {
+        this.timestamp = LocalDateTime.now();
     }
 
-    public void setLocalDateTime(LocalDateTime localDateTime) {
-        this.localDateTime = localDateTime;
+    public LocalDateTime getTimestamp() {
+        return timestamp;
+    }
+
+    public void setTimestamp(LocalDateTime timestamp) {
+        this.timestamp = timestamp;
     }
 
     public int getStatusCode() {

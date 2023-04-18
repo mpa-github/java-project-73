@@ -3,22 +3,27 @@ package hexlet.code.service;
 import hexlet.code.domain.dto.UserModelMapper;
 import hexlet.code.domain.dto.UserRequestDTO;
 import hexlet.code.domain.model.User;
-import hexlet.code.exception.NotFoundInDatabaseException;
+import hexlet.code.exception.NotTheOwnerException;
+import hexlet.code.exception.NotFoundException;
+import hexlet.code.exception.UserAlreadyExistException;
 import hexlet.code.repository.UserRepository;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-
-import java.util.Optional;
 
 @Service
 public class UserService {
 
     private final UserRepository userRepository;
     private final UserModelMapper userMapper;
-    //private final PasswordEncoder bCryptPasswordEncoder;
+    private final PasswordEncoder bCryptPasswordEncoder;
 
-    public UserService(UserRepository userRepository, UserModelMapper userMapper) {
+    public UserService(UserRepository userRepository,
+                       UserModelMapper userMapper,
+                       PasswordEncoder bCryptPasswordEncoder) {
         this.userRepository = userRepository;
         this.userMapper = userMapper;
+        this.bCryptPasswordEncoder = bCryptPasswordEncoder;
     }
 
     public Iterable<User> getAllUsers() {
@@ -26,26 +31,46 @@ public class UserService {
     }
 
     public User getUserById(long userId) {
-        Optional<User> optionalUser = userRepository.findUserById(userId);
-        if (optionalUser.isEmpty()) {
-            throw new NotFoundInDatabaseException("User with id='%d' not found!".formatted(userId));
-        }
-        return optionalUser.get();
+        return userRepository.findUserById(userId)
+            .orElseThrow(() -> new NotFoundException("User with id='%d' not found!".formatted(userId)));
     }
 
     public User createUser(UserRequestDTO userDTO) {
+        if (userRepository.existsUserByEmailIgnoreCase(userDTO.getEmail())) {
+            throw new UserAlreadyExistException("User already exists!");
+        }
         User newUser = userMapper.toUserModel(userDTO);
+        encodePassword(newUser);
         return userRepository.save(newUser);
     }
 
-    public User updateUser(UserRequestDTO userDTO, long userId) {
+    public User updateUser(long userId, UserRequestDTO userDTO, UserDetails userDetails) {
+        // TODO Can we update email (Spring Username)?
+        // TODO generate new token after update?
         User userToUpdate = getUserById(userId);
+        validateOwnerByEmail(userToUpdate.getEmail(), userDetails);
         userMapper.updateUserModel(userToUpdate, userDTO);
+        encodePassword(userToUpdate);
         return userRepository.save(userToUpdate);
     }
 
-    public void deleteUser(long userId) {
+    public void deleteUser(long userId, UserDetails userDetails) {
         User existedUser = getUserById(userId);
+        validateOwnerByEmail(existedUser.getEmail(), userDetails);
         userRepository.delete(existedUser);
+    }
+
+    private void encodePassword(User user) {
+        String userPassword = user.getPassword();
+        String encodedRow = bCryptPasswordEncoder.encode(userPassword);
+        user.setPassword(encodedRow);
+    }
+
+    // TODO We can use @PreAuthorize instead
+    private void validateOwnerByEmail(String userEmail, UserDetails userDetails) {
+        String authenticatedEmail = userDetails.getUsername();
+        if (!authenticatedEmail.equalsIgnoreCase(userEmail)) {
+            throw new NotTheOwnerException("Access denied. For owner only!");
+        }
     }
 }
