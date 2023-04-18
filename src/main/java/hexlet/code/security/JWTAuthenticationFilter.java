@@ -12,6 +12,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
+import org.springframework.security.web.util.matcher.NegatedRequestMatcher;
 import org.springframework.security.web.util.matcher.OrRequestMatcher;
 import org.springframework.security.web.util.matcher.RequestMatcher;
 import org.springframework.stereotype.Component;
@@ -36,10 +37,10 @@ public class JWTAuthenticationFilter extends OncePerRequestFilter {
     private final HandlerExceptionResolver resolver;
 
     private final RequestMatcher ignoredPaths = new OrRequestMatcher(
-        new AntPathRequestMatcher("/welcome", HttpMethod.GET.name()),
         new AntPathRequestMatcher("/api/users", HttpMethod.GET.name()),
         new AntPathRequestMatcher("/api/users", HttpMethod.POST.name()),
-        new AntPathRequestMatcher("/api/login", HttpMethod.POST.name())
+        new AntPathRequestMatcher("/api/login", HttpMethod.POST.name()),
+        new NegatedRequestMatcher(new AntPathRequestMatcher("/api/**"))
     );
 
     public JWTAuthenticationFilter(AppUserDetailsService userDetailsService,

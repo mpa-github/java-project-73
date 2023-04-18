@@ -4,6 +4,7 @@ import hexlet.code.exception.handler.CustomAccessDeniedHandler;
 import hexlet.code.exception.handler.CustomAuthenticationEntryPoint;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -14,6 +15,10 @@ import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
+import org.springframework.security.web.util.matcher.NegatedRequestMatcher;
+import org.springframework.security.web.util.matcher.OrRequestMatcher;
+import org.springframework.security.web.util.matcher.RequestMatcher;
 
 import static org.springframework.http.HttpMethod.GET;
 import static org.springframework.http.HttpMethod.POST;
@@ -29,6 +34,13 @@ public class WebSecurityConfig {
     private final AccessDeniedHandler customAccessDeniedHandler;
     private final AuthenticationEntryPoint customAuthenticationEntryPoint;
 
+    private final RequestMatcher publicPaths = new OrRequestMatcher(
+        new AntPathRequestMatcher("/api/users", HttpMethod.GET.name()),
+        new AntPathRequestMatcher("/api/users", HttpMethod.POST.name()),
+        new AntPathRequestMatcher("/api/login", HttpMethod.POST.name()),
+        new NegatedRequestMatcher(new AntPathRequestMatcher("/api/**"))
+    );
+
     public WebSecurityConfig(JWTAuthenticationFilter jwtFilter,
                              CustomAccessDeniedHandler customAccessDeniedHandler,
                              CustomAuthenticationEntryPoint customAuthenticationEntryPoint) {
@@ -39,15 +51,14 @@ public class WebSecurityConfig {
 
     @Bean // Replace DefaultSecurityFilterChain
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        http.csrf().disable()/*.headers().frameOptions().disable()*/;
-        http.httpBasic().disable();
-        http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+        http.csrf().disable()/*.headers().frameOptions().disable()*/
+            .httpBasic().disable()
+            .formLogin().disable()
+            .logout().disable()
+            .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 
         http.authorizeRequests()
-            .antMatchers(GET, "/welcome").permitAll()
-            .antMatchers(GET, "/api/users").permitAll()
-            .antMatchers(POST, "/api/users").permitAll()
-            .antMatchers(POST, "/api/login").permitAll()
+            .requestMatchers(publicPaths).permitAll()
             .anyRequest().authenticated();
 
         http.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
