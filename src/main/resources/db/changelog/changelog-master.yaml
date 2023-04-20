@@ -1,6 +1,6 @@
 databaseChangeLog:
 - changeSet:
-    id: 1681935472131-1
+    id: 1681994774529-1
     author: MPA (generated)
     changes:
     - createTable:
@@ -21,7 +21,25 @@ databaseChangeLog:
             type: VARCHAR(255)
         tableName: statuses
 - changeSet:
-    id: 1681935472131-2
+    id: 1681994774529-2
+    author: MPA (generated)
+    changes:
+    - createTable:
+        columns:
+        - column:
+            autoIncrement: true
+            constraints:
+              nullable: false
+              primaryKey: true
+              primaryKeyName: tasksPK
+            name: id
+            type: BIGINT
+        - column:
+            name: name
+            type: VARCHAR(255)
+        tableName: tasks
+- changeSet:
+    id: 1681994774529-3
     author: MPA (generated)
     changes:
     - createTable:
@@ -50,24 +68,4 @@ databaseChangeLog:
             name: password
             type: VARCHAR(255)
         tableName: users
-
-databaseChangeLog:
-- changeSet:
-    id: 1681935776247-1
-    author: MPA (generated)
-    changes:
-    - createTable:
-        columns:
-        - column:
-            autoIncrement: true
-            constraints:
-              nullable: false
-              primaryKey: true
-              primaryKeyName: tasksPK
-            name: id
-            type: BIGINT
-        - column:
-            name: name
-            type: VARCHAR(255)
-        tableName: tasks
 
