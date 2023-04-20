@@ -1,5 +1,7 @@
-package hexlet.code.domain.dto;
+package hexlet.code.domain.mapper;
 
+import hexlet.code.domain.dto.TaskStatusRequestDTO;
+import hexlet.code.domain.dto.TaskStatusResponseDTO;
 import hexlet.code.domain.model.TaskStatus;
 import org.springframework.stereotype.Component;
 

@@ -69,3 +69,94 @@ databaseChangeLog:
             type: VARCHAR(255)
         tableName: users
 
+databaseChangeLog:
+- changeSet:
+    id: 1682009039777-1
+    author: MPA (generated)
+    changes:
+    - addColumn:
+        columns:
+        - column:
+            name: created_at
+            type: timestamp
+        tableName: tasks
+- changeSet:
+    id: 1682009039777-2
+    author: MPA (generated)
+    changes:
+    - addColumn:
+        columns:
+        - column:
+            name: description
+            type: varchar(255)
+        tableName: tasks
+- changeSet:
+    id: 1682009039777-3
+    author: MPA (generated)
+    changes:
+    - addColumn:
+        columns:
+        - column:
+            name: executor_id
+            type: bigint
+        tableName: tasks
+- changeSet:
+    id: 1682009039777-4
+    author: MPA (generated)
+    changes:
+    - addColumn:
+        columns:
+        - column:
+            name: task_status_id
+            type: bigint
+        tableName: tasks
+- changeSet:
+    id: 1682009039777-5
+    author: MPA (generated)
+    changes:
+    - addColumn:
+        columns:
+        - column:
+            name: user_id
+            type: bigint
+        tableName: tasks
+- changeSet:
+    id: 1682009039777-6
+    author: MPA (generated)
+    changes:
+    - addForeignKeyConstraint:
+        baseColumnNames: user_id
+        baseTableName: tasks
+        constraintName: FK6s1ob9k4ihi75xbxe2w0ylsdh
+        deferrable: false
+        initiallyDeferred: false
+        referencedColumnNames: id
+        referencedTableName: users
+        validate: true
+- changeSet:
+    id: 1682009039777-7
+    author: MPA (generated)
+    changes:
+    - addForeignKeyConstraint:
+        baseColumnNames: executor_id
+        baseTableName: tasks
+        constraintName: FKbrg922bkqn5m7212jsqjg6ioe
+        deferrable: false
+        initiallyDeferred: false
+        referencedColumnNames: id
+        referencedTableName: users
+        validate: true
+- changeSet:
+    id: 1682009039777-8
+    author: MPA (generated)
+    changes:
+    - addForeignKeyConstraint:
+        baseColumnNames: task_status_id
+        baseTableName: tasks
+        constraintName: FKdv9k4oaxnrxb91o32qq1tes7s
+        deferrable: false
+        initiallyDeferred: false
+        referencedColumnNames: id
+        referencedTableName: statuses
+        validate: true
+

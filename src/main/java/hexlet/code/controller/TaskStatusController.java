@@ -1,6 +1,6 @@
 package hexlet.code.controller;
 
-import hexlet.code.domain.dto.TaskStatusModelMapper;
+import hexlet.code.domain.mapper.TaskStatusModelMapper;
 import hexlet.code.domain.dto.TaskStatusRequestDTO;
 import hexlet.code.domain.dto.TaskStatusResponseDTO;
 import hexlet.code.domain.model.TaskStatus;

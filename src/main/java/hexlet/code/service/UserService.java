@@ -1,6 +1,6 @@
 package hexlet.code.service;
 
-import hexlet.code.domain.dto.UserModelMapper;
+import hexlet.code.domain.mapper.UserModelMapper;
 import hexlet.code.domain.dto.UserRequestDTO;
 import hexlet.code.domain.model.User;
 import hexlet.code.exception.NotTheOwnerException;

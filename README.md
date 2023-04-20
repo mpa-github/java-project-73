@@ -15,16 +15,16 @@ Registration and authentication are required to work with the system. <br>
 ## Application Deployment
 ### PaaS Railway
 
-<link>
+<https://java-project-73-production-23c7.up.railway.app/>
 
 ## Unix
 ### Setup
 
 ```sh
-make ...
+make build
 ```
 ### Start
 
 ```sh
-make ...
+make run
 ```
