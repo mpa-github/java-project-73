@@ -6,8 +6,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import hexlet.code.domain.model.User;
 import org.springframework.stereotype.Component;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-
 @Component
 public class TestUtils {
 
