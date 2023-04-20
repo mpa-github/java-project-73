@@ -41,16 +41,20 @@ dependencies {
 
 	runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.11.5'
 	runtimeOnly'io.jsonwebtoken:jjwt-jackson:0.11.5'
-	runtimeOnly 'com.h2database:h2'
+	runtimeOnly 'com.h2database:h2:2.1.214'
 	runtimeOnly 'org.postgresql:postgresql'
 
-	liquibaseRuntime 'org.liquibase:liquibase-core:4.20.0'
+	liquibaseRuntime 'org.liquibase:liquibase-core:4.16.1'
+	liquibaseRuntime 'org.liquibase:liquibase-groovy-dsl:3.0.2'
+	liquibaseRuntime 'info.picocli:picocli:4.6.1'
 	liquibaseRuntime 'com.h2database:h2:2.1.214'
-	liquibaseRuntime 'org.liquibase:liquibase-groovy-dsl:3.0.3'
-	liquibaseRuntime 'info.picocli:picocli:4.7.1'
-	liquibaseRuntime 'org.liquibase.ext:liquibase-hibernate5:4.20.0'
+	liquibaseRuntime 'org.liquibase.ext:liquibase-hibernate5:4.16.1'
 	liquibaseRuntime 'org.springframework.boot:spring-boot-starter-data-jpa'
-	liquibaseRuntime sourceSets.main.output // is necessary for Hibernate to find entity classes
+	liquibaseRuntime("ch.qos.logback:logback-core:1.4.6")
+	liquibaseRuntime("ch.qos.logback:logback-classic:1.4.6")
+	liquibaseRuntime sourceSets.main.output
+
+	annotationProcessor 'org.hibernate.javax.persistence:hibernate-jpa-2.1-api:1.0.2.Final'
 
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 }
@@ -66,14 +70,14 @@ diffChangeLog {
 liquibase {
 	activities {
 		main {
-			changeLogFile 'src/main/resources/db/changelog/changelog-master.yml'
-			url 'jdbc:h2:./dev_database'
+			changeLogFile 'src/main/resources/db/changelog/changelog-master.yaml'
+			url 'jdbc:h2:./database73'
 			username 'sa'
 			password 'sa'
-			referenceUrl 'hibernate:spring:hexlet.code.model' +
+			referenceUrl 'hibernate:spring:hexlet.code.domain.model' +
 					     '?dialect=org.hibernate.dialect.H2Dialect' +
-					     '&hibernate.physical_naming_strategy=org.springframework.boot.orm.jpa.hibernate.SpringPhysicalNamingStrategy' +
-					     '&hibernate.implicit_naming_strategy=org.springframework.boot.orm.jpa.hibernate.SpringImplicitNamingStrategy'
+					     '&hibernate.physical_naming_strategy=org.springframework.boot.orm.jpa.hibernate.SpringPhysicalNamingStrategy'
+//					     '&hibernate.implicit_naming_strategy=org.springframework.boot.orm.jpa.hibernate.SpringImplicitNamingStrategy'
 		}
 	}
 }

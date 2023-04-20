@@ -21,6 +21,8 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
+// TODO Validate dto field names (can me extra now)
+
 @RestController
 @RequestMapping("/api")
 public class UserController {

@@ -20,6 +20,9 @@ public class UserRequestDTO {
     @Size(min = 3, message = "Password length must be at least 3 characters!")
     private String password;
 
+    public UserRequestDTO() {
+    }
+
     public UserRequestDTO(String email, String firstName, String lastName, String password) {
         this.email = email;
         this.firstName = firstName;

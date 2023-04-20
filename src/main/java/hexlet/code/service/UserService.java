@@ -30,32 +30,32 @@ public class UserService {
         return userRepository.findAll();
     }
 
-    public User getUserById(long userId) {
-        return userRepository.findUserById(userId)
-            .orElseThrow(() -> new NotFoundException("User with id='%d' not found!".formatted(userId)));
+    public User getUserById(long id) {
+        return userRepository.findUserById(id)
+            .orElseThrow(() -> new NotFoundException("User with id='%d' not found!".formatted(id)));
     }
 
-    public User createUser(UserRequestDTO userDTO) {
-        if (userRepository.existsUserByEmailIgnoreCase(userDTO.getEmail())) {
+    public User createUser(UserRequestDTO dto) {
+        if (userRepository.existsUserByEmailIgnoreCase(dto.getEmail())) {
             throw new UserAlreadyExistException("User already exists!");
         }
-        User newUser = userMapper.toUserModel(userDTO);
+        User newUser = userMapper.toUserModel(dto);
         encodePassword(newUser);
         return userRepository.save(newUser);
     }
 
-    public User updateUser(long userId, UserRequestDTO userDTO, UserDetails userDetails) {
+    public User updateUser(long userId, UserRequestDTO dto, UserDetails userDetails) {
         // TODO Can we update email (Spring Username)?
         // TODO generate new token after update?
         User userToUpdate = getUserById(userId);
         validateOwnerByEmail(userToUpdate.getEmail(), userDetails);
-        userMapper.updateUserModel(userToUpdate, userDTO);
+        userMapper.updateUserModel(userToUpdate, dto);
         encodePassword(userToUpdate);
         return userRepository.save(userToUpdate);
     }
 
-    public void deleteUser(long userId, UserDetails userDetails) {
-        User existedUser = getUserById(userId);
+    public void deleteUser(long id, UserDetails userDetails) {
+        User existedUser = getUserById(id);
         validateOwnerByEmail(existedUser.getEmail(), userDetails);
         userRepository.delete(existedUser);
     }

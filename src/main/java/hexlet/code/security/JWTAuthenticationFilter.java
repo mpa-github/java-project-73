@@ -40,6 +40,8 @@ public class JWTAuthenticationFilter extends OncePerRequestFilter {
         new AntPathRequestMatcher("/api/users", HttpMethod.GET.name()),
         new AntPathRequestMatcher("/api/users", HttpMethod.POST.name()),
         new AntPathRequestMatcher("/api/login", HttpMethod.POST.name()),
+        new AntPathRequestMatcher("/api/statuses", HttpMethod.GET.name()),
+        new AntPathRequestMatcher("/api/statuses/{id}", HttpMethod.GET.name()),
         new NegatedRequestMatcher(new AntPathRequestMatcher("/api/**"))
     );
 
@@ -77,8 +79,8 @@ public class JWTAuthenticationFilter extends OncePerRequestFilter {
         }
 
         String email = (String) claims.get("email"); // TODO mb extract email with JWTUtils.getEmail()?
-        SecurityContext currentSecurityContext = SecurityContextHolder.getContext();
-        if (!email.isBlank() && currentSecurityContext.getAuthentication() == null) {
+        SecurityContext securityContext = SecurityContextHolder.getContext();
+        if (!email.isBlank() && securityContext.getAuthentication() == null) {
             UserDetails userDetails = userDetailsService.loadUserByUsername(email);
             var springAuthToken = new UsernamePasswordAuthenticationToken(
                 userDetails,
@@ -86,9 +88,8 @@ public class JWTAuthenticationFilter extends OncePerRequestFilter {
                 userDetails.getAuthorities()
             );
             springAuthToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-            currentSecurityContext.setAuthentication(springAuthToken);
+            securityContext.setAuthentication(springAuthToken);
         }
-
         filterChain.doFilter(request, response);
     }
 }

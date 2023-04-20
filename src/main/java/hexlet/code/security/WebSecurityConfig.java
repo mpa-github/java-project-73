@@ -4,6 +4,7 @@ import hexlet.code.exception.handler.CustomAccessDeniedHandler;
 import hexlet.code.exception.handler.CustomAuthenticationEntryPoint;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -37,6 +38,8 @@ public class WebSecurityConfig {
         new AntPathRequestMatcher("/api/users", GET.name()),
         new AntPathRequestMatcher("/api/users", POST.name()),
         new AntPathRequestMatcher("/api/login", POST.name()),
+        new AntPathRequestMatcher("/api/statuses", GET.name()),
+        new AntPathRequestMatcher("/api/statuses/{id}", HttpMethod.GET.name()),
         new NegatedRequestMatcher(new AntPathRequestMatcher("/api/**"))
     );
 
