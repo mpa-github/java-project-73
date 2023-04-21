@@ -189,13 +189,13 @@ databaseChangeLog:
     author: MPA (generated)
     changes:
     - dropForeignKeyConstraint:
-        baseTableName: TASKS
-        constraintName: FK6S1OB9K4IHI75XBXE2W0YLSDH
+        baseTableName: tasks
+        constraintName: FK6s1ob9k4ihi75xbxe2w0ylsdh
 - changeSet:
     id: 1682070592241-4
     author: MPA (generated)
     changes:
     - dropColumn:
-        columnName: USER_ID
-        tableName: TASKS
+        columnName: user_id
+        tableName: tasks
 
