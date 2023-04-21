@@ -19,11 +19,11 @@ public class TaskStatusService {
         this.statusMapper = statusMapper;
     }
 
-    public Iterable<TaskStatus> getAllStatuses() {
+    public Iterable<TaskStatus> findAllStatuses() {
         return statusRepository.findAll();
     }
 
-    public TaskStatus getStatusById(long id) {
+    public TaskStatus findStatusById(long id) {
         return statusRepository.findTaskStatusById(id)
             .orElseThrow(() -> new NotFoundException("Status with id='%d' not found!".formatted(id)));
     }
@@ -34,13 +34,13 @@ public class TaskStatusService {
     }
 
     public TaskStatus updateStatus(long id, TaskStatusRequestDTO dto) {
-        TaskStatus statusToUpdate = getStatusById(id);
+        TaskStatus statusToUpdate = findStatusById(id);
         statusMapper.updateStatusModel(statusToUpdate, dto);
         return statusRepository.save(statusToUpdate);
     }
 
     public void deleteStatus(long id) {
-        TaskStatus existedStatus = getStatusById(id);
+        TaskStatus existedStatus = findStatusById(id);
         statusRepository.delete(existedStatus);
     }
 }

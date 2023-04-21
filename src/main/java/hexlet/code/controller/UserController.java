@@ -21,7 +21,7 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
-// TODO Validate dto field names (can me extra now)
+// TODO Validate dto field names (can be extra fields now)
 
 @RestController
 @RequestMapping("/api")
@@ -36,8 +36,8 @@ public class UserController {
     }
 
     @GetMapping(path = "/users")
-    public List<UserResponseDTO> getAllUsers() {
-        Iterable<User> existedUsers = userService.getAllUsers();
+    public List<UserResponseDTO> findAllUsers() {
+        Iterable<User> existedUsers = userService.findAllUsers();
         List<UserResponseDTO> userDTOList = new ArrayList<>();
         existedUsers.forEach(user -> userDTOList.add(userMapper.toUserResponseDTO(user)));
         userDTOList.sort(Comparator.comparing(UserResponseDTO::getId));
@@ -45,8 +45,8 @@ public class UserController {
     }
 
     @GetMapping(path = "/users/{id}")
-    public UserResponseDTO getUserById(@PathVariable(name = "id") long id) {
-        User existedUser = userService.getUserById(id);
+    public UserResponseDTO findUserById(@PathVariable(name = "id") long id) {
+        User existedUser = userService.findUserById(id);
         return userMapper.toUserResponseDTO(existedUser);
     }
 
@@ -59,14 +59,14 @@ public class UserController {
     @PutMapping(path = "/users/{id}")
     public UserResponseDTO updateUser(@RequestBody @Valid UserRequestDTO dto,
                                       @PathVariable(name = "id") long id,
-                                      @AuthenticationPrincipal UserDetails userDetails) {
-        User updatedUser = userService.updateUser(id, dto, userDetails);
+                                      @AuthenticationPrincipal UserDetails authDetails) {
+        User updatedUser = userService.updateUser(id, dto, authDetails);
         return userMapper.toUserResponseDTO(updatedUser);
     }
 
     @DeleteMapping(path = "/users/{id}")
     public void deleteUser(@PathVariable(name = "id") long id,
-                           @AuthenticationPrincipal UserDetails userDetails) {
-        userService.deleteUser(id, userDetails);
+                           @AuthenticationPrincipal UserDetails authDetails) {
+        userService.deleteUser(id, authDetails);
     }
 }

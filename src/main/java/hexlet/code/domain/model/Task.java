@@ -24,14 +24,14 @@ public class Task {
     private String description;
 
     @NotNull
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     private TaskStatus taskStatus;
 
     @NotNull
-    @ManyToOne(fetch = FetchType.LAZY)
-    private User user;
+    @ManyToOne(fetch = FetchType.EAGER)
+    private User author;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     private User executor;
 
     @CreationTimestamp
@@ -43,13 +43,13 @@ public class Task {
     public Task(String name,
                 String description,
                 TaskStatus taskStatus,
-                User user,
+                User author,
                 User executor,
                 Instant createdAt) {
         this.name = name;
         this.description = description;
         this.taskStatus = taskStatus;
-        this.user = user;
+        this.author = author;
         this.executor = executor;
         this.createdAt = createdAt;
     }
@@ -86,12 +86,12 @@ public class Task {
         this.taskStatus = taskStatus;
     }
 
-    public User getUser() {
-        return user;
+    public User getAuthor() {
+        return author;
     }
 
-    public void setUser(User user) {
-        this.user = user;
+    public void setAuthor(User user) {
+        this.author = user;
     }
 
     public User getExecutor() {

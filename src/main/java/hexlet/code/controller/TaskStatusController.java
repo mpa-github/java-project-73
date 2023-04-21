@@ -35,8 +35,8 @@ public class TaskStatusController {
     }
 
     @GetMapping(path = "/statuses")
-    public List<TaskStatusResponseDTO> getAllStatuses() {
-        Iterable<TaskStatus> existedStatuses = statusService.getAllStatuses();
+    public List<TaskStatusResponseDTO> findAllStatuses() {
+        Iterable<TaskStatus> existedStatuses = statusService.findAllStatuses();
         List<TaskStatusResponseDTO> statusDTOList = new ArrayList<>();
         existedStatuses.forEach(status -> statusDTOList.add(statusMapper.toTaskStatusResponseDTO(status)));
         statusDTOList.sort(Comparator.comparing(TaskStatusResponseDTO::getId));
@@ -44,8 +44,8 @@ public class TaskStatusController {
     }
 
     @GetMapping(path = "/statuses/{id}")
-    public TaskStatusResponseDTO getStatusById(@PathVariable(name = "id") long id) {
-        TaskStatus existedStatus = statusService.getStatusById(id);
+    public TaskStatusResponseDTO findStatusById(@PathVariable(name = "id") long id) {
+        TaskStatus existedStatus = statusService.findStatusById(id);
         return statusMapper.toTaskStatusResponseDTO(existedStatus);
     }
 

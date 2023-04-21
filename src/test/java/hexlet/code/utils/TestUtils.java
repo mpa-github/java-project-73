@@ -3,6 +3,7 @@ package hexlet.code.utils;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import hexlet.code.domain.model.TaskStatus;
 import hexlet.code.domain.model.User;
 import org.springframework.stereotype.Component;
 
@@ -25,12 +26,22 @@ public class TestUtils {
         return JSON_MAPPER.readValue(json, type);
     }
 
-    public User buildDefaultUser() {
+    public User buildDefaultUser(String email) {
         User user = new User();
         user.setFirstName(DEFAULT_FIRST_NAME);
         user.setLastName(DEFAULT_LAST_NAME);
-        user.setEmail(DEFAULT_EMAIL);
+        user.setEmail(email);
         user.setPassword(DEFAULT_PASS);
         return user;
+    }
+
+    public User buildDefaultUser() {
+        return buildDefaultUser(DEFAULT_EMAIL);
+    }
+
+    public TaskStatus buildDefaultStatus(String name) {
+        TaskStatus status = new TaskStatus();
+        status.setName(name);
+        return status;
     }
 }

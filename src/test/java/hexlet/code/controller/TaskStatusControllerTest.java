@@ -6,6 +6,7 @@ import hexlet.code.domain.dto.TaskStatusResponseDTO;
 import hexlet.code.domain.model.Status;
 import hexlet.code.domain.model.TaskStatus;
 import hexlet.code.domain.model.User;
+import hexlet.code.repository.TaskRepository;
 import hexlet.code.repository.TaskStatusRepository;
 import hexlet.code.repository.UserRepository;
 import hexlet.code.security.JWTUtils;
@@ -56,6 +57,8 @@ class TaskStatusControllerTest {
     @Autowired
     private TaskStatusRepository statusRepository;
     @Autowired
+    private TaskRepository taskRepository;
+    @Autowired
     private JWTUtils jwtUtils;
     @Autowired
     private TestUtils testUtils;
@@ -70,12 +73,13 @@ class TaskStatusControllerTest {
 
     @AfterEach
     void afterEach() {
+        taskRepository.deleteAll();
         statusRepository.deleteAll();
         userRepository.deleteAll();
     }
 
     @Test
-    void testGetAllStatuses() throws Exception {
+    void testFindAllStatuses() throws Exception {
         createStatus(TEST_STATUS_NAME_1)
             .andExpect(status().isOk());
 
@@ -99,7 +103,7 @@ class TaskStatusControllerTest {
     }
 
     @Test
-    void testGetStatusById() throws Exception {
+    void testFindStatusById() throws Exception {
         createStatus(TEST_STATUS_NAME_1)
             .andExpect(status().isOk());
 
@@ -122,9 +126,9 @@ class TaskStatusControllerTest {
     @Test
     void testCreateStatus() throws Exception {
         long expectedCountInDB = 0;
-        long actual = statusRepository.count();
+        long actualCount = statusRepository.count();
 
-        assertEquals(expectedCountInDB, actual);
+        assertEquals(expectedCountInDB, actualCount);
 
         createStatus(TEST_STATUS_NAME_1)
             .andExpect(status().isOk())
@@ -132,9 +136,9 @@ class TaskStatusControllerTest {
             .andExpect(jsonPath("$.name", is(TEST_STATUS_NAME_1)));
 
         expectedCountInDB = 1;
-        actual = userRepository.count();
+        actualCount = statusRepository.count();
 
-        assertEquals(expectedCountInDB, actual);
+        assertEquals(expectedCountInDB, actualCount);
     }
 
     @Test
@@ -153,8 +157,7 @@ class TaskStatusControllerTest {
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON))
             .andExpect(jsonPath("$.id", is(statusId), Long.class))
-            .andExpect(jsonPath("$.name", is(TEST_UPDATED_STATUS_NAME)))
-            .andReturn().getResponse();
+            .andExpect(jsonPath("$.name", is(TEST_UPDATED_STATUS_NAME)));
 
         Optional<TaskStatus> actual = statusRepository.findTaskStatusById(statusId);
 
@@ -174,7 +177,7 @@ class TaskStatusControllerTest {
                 .header(HttpHeaders.AUTHORIZATION, TOKEN_PREFIX + token))
             .andExpect(status().isOk());
 
-        assertFalse(userRepository.existsById(statusId));
+        assertFalse(statusRepository.existsById(statusId));
     }
 
     private ResultActions createStatus(String name) throws Exception {

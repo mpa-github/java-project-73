@@ -26,13 +26,18 @@ public class UserService {
         this.bCryptPasswordEncoder = bCryptPasswordEncoder;
     }
 
-    public Iterable<User> getAllUsers() {
+    public Iterable<User> findAllUsers() {
         return userRepository.findAll();
     }
 
-    public User getUserById(long id) {
+    public User findUserById(long id) {
         return userRepository.findUserById(id)
             .orElseThrow(() -> new NotFoundException("User with id='%d' not found!".formatted(id)));
+    }
+
+    public User findUserByEmail(String email) {
+        return userRepository.findUserByEmailIgnoreCase(email)
+            .orElseThrow(() -> new NotFoundException("User with email '%s' not found!".formatted(email)));
     }
 
     public User createUser(UserRequestDTO dto) {
@@ -44,19 +49,19 @@ public class UserService {
         return userRepository.save(newUser);
     }
 
-    public User updateUser(long userId, UserRequestDTO dto, UserDetails userDetails) {
+    public User updateUser(long id, UserRequestDTO dto, UserDetails authDetails) {
         // TODO Can we update email (Spring Username)?
         // TODO generate new token after update?
-        User userToUpdate = getUserById(userId);
-        validateOwnerByEmail(userToUpdate.getEmail(), userDetails);
+        User userToUpdate = findUserById(id);
+        validateOwnerByEmail(userToUpdate.getEmail(), authDetails);
         userMapper.updateUserModel(userToUpdate, dto);
         encodePassword(userToUpdate);
         return userRepository.save(userToUpdate);
     }
 
-    public void deleteUser(long id, UserDetails userDetails) {
-        User existedUser = getUserById(id);
-        validateOwnerByEmail(existedUser.getEmail(), userDetails);
+    public void deleteUser(long id, UserDetails authDetails) {
+        User existedUser = findUserById(id);
+        validateOwnerByEmail(existedUser.getEmail(), authDetails);
         userRepository.delete(existedUser);
     }
 
@@ -67,8 +72,8 @@ public class UserService {
     }
 
     // TODO We can use @PreAuthorize instead
-    private void validateOwnerByEmail(String userEmail, UserDetails userDetails) {
-        String authenticatedEmail = userDetails.getUsername();
+    private void validateOwnerByEmail(String userEmail, UserDetails authDetails) {
+        String authenticatedEmail = authDetails.getUsername();
         if (!authenticatedEmail.equalsIgnoreCase(userEmail)) {
             throw new NotTheOwnerException("Access denied. For owner only!");
         }

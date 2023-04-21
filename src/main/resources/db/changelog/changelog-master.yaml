@@ -160,3 +160,42 @@ databaseChangeLog:
         referencedTableName: statuses
         validate: true
 
+databaseChangeLog:
+- changeSet:
+    id: 1682070592241-1
+    author: MPA (generated)
+    changes:
+    - addColumn:
+        columns:
+        - column:
+            name: author_id
+            type: bigint
+        tableName: tasks
+- changeSet:
+    id: 1682070592241-2
+    author: MPA (generated)
+    changes:
+    - addForeignKeyConstraint:
+        baseColumnNames: author_id
+        baseTableName: tasks
+        constraintName: FKhods8r8oyyx7tuj3c91ki2sk1
+        deferrable: false
+        initiallyDeferred: false
+        referencedColumnNames: id
+        referencedTableName: users
+        validate: true
+- changeSet:
+    id: 1682070592241-3
+    author: MPA (generated)
+    changes:
+    - dropForeignKeyConstraint:
+        baseTableName: TASKS
+        constraintName: FK6S1OB9K4IHI75XBXE2W0YLSDH
+- changeSet:
+    id: 1682070592241-4
+    author: MPA (generated)
+    changes:
+    - dropColumn:
+        columnName: USER_ID
+        tableName: TASKS
+

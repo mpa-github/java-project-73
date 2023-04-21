@@ -5,6 +5,7 @@ import hexlet.code.domain.dto.LogInRequestDTO;
 import hexlet.code.domain.dto.UserRequestDTO;
 import hexlet.code.domain.dto.UserResponseDTO;
 import hexlet.code.domain.model.User;
+import hexlet.code.repository.TaskRepository;
 import hexlet.code.repository.TaskStatusRepository;
 import hexlet.code.repository.UserRepository;
 import hexlet.code.utils.TestUtils;
@@ -59,16 +60,19 @@ class UserControllerTest {
     @Autowired
     private TaskStatusRepository statusRepository;
     @Autowired
+    private TaskRepository taskRepository;
+    @Autowired
     private TestUtils utils;
 
     @AfterEach
     void afterEach() {
+        taskRepository.deleteAll();
         statusRepository.deleteAll();
         userRepository.deleteAll();
     }
 
     @Test
-    void testGetAllUsers() throws Exception {
+    void testFindAllUsers() throws Exception {
         registerUser(TEST_EMAIL_1)
             .andExpect(status().isOk());
 
@@ -92,7 +96,7 @@ class UserControllerTest {
     }
 
     @Test
-    void testGetUserById() throws Exception {
+    void testFindUserById() throws Exception {
         registerUser(TEST_EMAIL_1)
             .andExpect(status().isOk());
 
@@ -121,9 +125,9 @@ class UserControllerTest {
     @Test
     void testRegisterUser() throws Exception {
         long expectedCountInDB = 0;
-        long actual = userRepository.count();
+        long actualCount = userRepository.count();
 
-        assertEquals(expectedCountInDB, actual);
+        assertEquals(expectedCountInDB, actualCount);
 
         registerUser(TEST_EMAIL_1)
             .andExpect(status().isOk())
@@ -131,9 +135,9 @@ class UserControllerTest {
             .andExpect(jsonPath("$.email", is(TEST_EMAIL_1)));
 
         expectedCountInDB = 1;
-        actual = userRepository.count();
+        actualCount = userRepository.count();
 
-        assertEquals(expectedCountInDB, actual);
+        assertEquals(expectedCountInDB, actualCount);
     }
 
     @Test
@@ -159,8 +163,7 @@ class UserControllerTest {
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON))
             .andExpect(jsonPath("$.id", is(userId), Long.class))
-            .andExpect(jsonPath("$.lastName", is(TEST_UPDATED_LAST_NAME)))
-            .andReturn().getResponse();
+            .andExpect(jsonPath("$.lastName", is(TEST_UPDATED_LAST_NAME)));
 
         assertTrue(userRepository.existsById(userId));
         assertNull(userRepository.findUserByLastName(previousLastName).orElse(null));

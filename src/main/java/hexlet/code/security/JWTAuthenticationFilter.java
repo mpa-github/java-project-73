@@ -4,7 +4,6 @@ import hexlet.code.exception.JWTValidationException;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtException;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -26,6 +25,8 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
+import static org.springframework.http.HttpMethod.GET;
+import static org.springframework.http.HttpMethod.POST;
 
 @Component
 public class JWTAuthenticationFilter extends OncePerRequestFilter {
@@ -37,11 +38,13 @@ public class JWTAuthenticationFilter extends OncePerRequestFilter {
     private final HandlerExceptionResolver resolver;
 
     private final RequestMatcher ignoredPaths = new OrRequestMatcher(
-        new AntPathRequestMatcher("/api/users", HttpMethod.GET.name()),
-        new AntPathRequestMatcher("/api/users", HttpMethod.POST.name()),
-        new AntPathRequestMatcher("/api/login", HttpMethod.POST.name()),
-        new AntPathRequestMatcher("/api/statuses", HttpMethod.GET.name()),
-        new AntPathRequestMatcher("/api/statuses/{id}", HttpMethod.GET.name()),
+        new AntPathRequestMatcher("/api/login", POST.name()),
+        new AntPathRequestMatcher("/api/users", GET.name()),
+        new AntPathRequestMatcher("/api/users", POST.name()),
+        new AntPathRequestMatcher("/api/statuses", GET.name()),
+        new AntPathRequestMatcher("/api/statuses/{id}", GET.name()),
+        new AntPathRequestMatcher("/api/tasks", GET.name()),
+        new AntPathRequestMatcher("/api/tasks/{id}", GET.name()),
         new NegatedRequestMatcher(new AntPathRequestMatcher("/api/**"))
     );
 
