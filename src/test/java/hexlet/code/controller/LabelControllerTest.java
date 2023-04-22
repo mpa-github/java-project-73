@@ -1,13 +1,12 @@
 package hexlet.code.controller;
 
 import com.fasterxml.jackson.core.type.TypeReference;
-import hexlet.code.domain.dto.TaskStatusRequestDTO;
-import hexlet.code.domain.dto.TaskStatusResponseDTO;
-import hexlet.code.domain.model.Status;
-import hexlet.code.domain.model.TaskStatus;
+import hexlet.code.domain.dto.LabelRequestDTO;
+import hexlet.code.domain.dto.LabelResponseDTO;
+import hexlet.code.domain.model.Label;
 import hexlet.code.domain.model.User;
+import hexlet.code.repository.LabelRepository;
 import hexlet.code.repository.TaskRepository;
-import hexlet.code.repository.TaskStatusRepository;
 import hexlet.code.repository.UserRepository;
 import hexlet.code.security.JWTUtils;
 import hexlet.code.utils.TestUtils;
@@ -45,11 +44,11 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT) // Test with a real http server
 @TestPropertySource(locations = "classpath:application-integrationtest.properties")
 @AutoConfigureMockMvc
-class TaskStatusControllerTest {
+class LabelControllerTest {
 
-    private static final String TEST_STATUS_NAME_1 = Status.NEW.getName();
-    private static final String TEST_STATUS_NAME_2 = Status.IN_PROGRESS.getName();
-    private static final String TEST_UPDATED_STATUS_NAME = "Custom status";
+    private static final String TEST_LABEL_NAME_1 = "Лэйбл #1";
+    private static final String TEST_LABEL_NAME_2 = "Лэйбл #2";
+    private static final String TEST_UPDATED_LABEL_NAME = "Измененный лэйбл";
     private String token;
 
     @Autowired
@@ -57,9 +56,11 @@ class TaskStatusControllerTest {
     @Autowired
     private UserRepository userRepository;
     @Autowired
-    private TaskStatusRepository statusRepository;
+    private LabelRepository statusRepository;
     @Autowired
     private TaskRepository taskRepository;
+    @Autowired
+    private LabelRepository labelRepository;
     @Autowired
     private JWTUtils jwtUtils;
     @Autowired
@@ -74,118 +75,121 @@ class TaskStatusControllerTest {
     @AfterEach
     void afterEach() {
         taskRepository.deleteAll();
+        labelRepository.deleteAll();
         statusRepository.deleteAll();
         userRepository.deleteAll();
     }
 
     @Test
-    void testFindAllStatuses() throws Exception {
-        createStatus(TEST_STATUS_NAME_1)
+    void testFindAllLabels() throws Exception {
+        createLabel(TEST_LABEL_NAME_1)
             .andExpect(status().isOk());
 
-        createStatus(TEST_STATUS_NAME_2)
+        createLabel(TEST_LABEL_NAME_2)
             .andExpect(status().isOk());
 
-        MockHttpServletResponse response = mvc.perform(get("/api/statuses"))
+        MockHttpServletResponse response = mvc.perform(get("/api/labels")
+                .header(HttpHeaders.AUTHORIZATION, TOKEN_PREFIX + token))
             .andExpect(status().isOk())
             .andReturn().getResponse();
 
-        List<TaskStatusResponseDTO> statusDTOList = testUtils.jsonToObject(
+        List<LabelResponseDTO> labelDTOList = testUtils.jsonToObject(
             response.getContentAsString(UTF_8),
             new TypeReference<>() { }
         );
         int expectedDtoCount = 2;
-        int actual = statusDTOList.size();
+        int actual = labelDTOList.size();
 
         assertEquals(expectedDtoCount, actual);
-        assertEquals(TEST_STATUS_NAME_1, statusDTOList.get(0).getName());
-        assertEquals(TEST_STATUS_NAME_2, statusDTOList.get(1).getName());
+        assertEquals(TEST_LABEL_NAME_1, labelDTOList.get(0).getName());
+        assertEquals(TEST_LABEL_NAME_2, labelDTOList.get(1).getName());
     }
 
     @Test
-    void testFindStatusById() throws Exception {
-        createStatus(TEST_STATUS_NAME_1)
+    void testFindLabelById() throws Exception {
+        createLabel(TEST_LABEL_NAME_1)
             .andExpect(status().isOk());
 
-        TaskStatus existedStatus = statusRepository.findAll().get(0);
-        long statusId = existedStatus.getId();
+        Label existedLabel = labelRepository.findAll().get(0);
+        long labelId = existedLabel.getId();
 
-        MockHttpServletResponse response = mvc.perform(get("/api/statuses/%d".formatted(statusId)))
+        MockHttpServletResponse response = mvc.perform(get("/api/labels/%d".formatted(labelId))
+                .header(HttpHeaders.AUTHORIZATION, TOKEN_PREFIX + token))
             .andExpect(status().isOk())
             .andReturn().getResponse();
 
-        TaskStatusResponseDTO statusDTO = testUtils.jsonToObject(
+        LabelResponseDTO labelDTO = testUtils.jsonToObject(
             response.getContentAsString(UTF_8),
             new TypeReference<>() { }
         );
 
-        assertEquals(existedStatus.getId(), statusDTO.getId());
-        assertEquals(existedStatus.getName(), statusDTO.getName());
+        assertEquals(existedLabel.getId(), labelDTO.getId());
+        assertEquals(existedLabel.getName(), labelDTO.getName());
     }
 
     @Test
-    void testCreateStatus() throws Exception {
+    void testCreateLabel() throws Exception {
         long expectedCountInDB = 0;
-        long actualCount = statusRepository.count();
+        long actualCount = labelRepository.count();
 
         assertEquals(expectedCountInDB, actualCount);
 
-        createStatus(TEST_STATUS_NAME_1)
+        createLabel(TEST_LABEL_NAME_1)
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-            .andExpect(jsonPath("$.name", is(TEST_STATUS_NAME_1)));
+            .andExpect(jsonPath("$.name", is(TEST_LABEL_NAME_1)));
 
         expectedCountInDB = 1;
-        actualCount = statusRepository.count();
+        actualCount = labelRepository.count();
 
         assertEquals(expectedCountInDB, actualCount);
     }
 
     @Test
-    void testUpdateStatus() throws Exception {
-        createStatus(TEST_STATUS_NAME_1)
+    void testUpdateLabel() throws Exception {
+        createLabel(TEST_LABEL_NAME_1)
             .andExpect(status().isOk());
 
-        TaskStatus statusToUpdate = statusRepository.findAll().get(0);
-        long statusId = statusToUpdate.getId();
-        TaskStatusRequestDTO dto = new TaskStatusRequestDTO(TEST_UPDATED_STATUS_NAME);
+        Label labelToUpdate = labelRepository.findAll().get(0);
+        long labelId = labelToUpdate.getId();
+        LabelRequestDTO dto = new LabelRequestDTO(TEST_UPDATED_LABEL_NAME);
 
-        mvc.perform(put("/api/statuses/%d".formatted(statusId))
+        mvc.perform(put("/api/labels/%d".formatted(labelId))
                 .header(HttpHeaders.AUTHORIZATION, TOKEN_PREFIX + token)
                 .content(testUtils.toJson(dto))
                 .contentType(MediaType.APPLICATION_JSON))
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-            .andExpect(jsonPath("$.id", is(statusId), Long.class))
-            .andExpect(jsonPath("$.name", is(TEST_UPDATED_STATUS_NAME)));
+            .andExpect(jsonPath("$.id", is(labelId), Long.class))
+            .andExpect(jsonPath("$.name", is(TEST_UPDATED_LABEL_NAME)));
 
-        Optional<TaskStatus> actual = statusRepository.findTaskStatusById(statusId);
+        Optional<Label> actual = labelRepository.findLabelById(labelId);
 
         assertNotNull(actual.orElse(null));
-        assertEquals(TEST_UPDATED_STATUS_NAME, actual.get().getName());
+        assertEquals(TEST_UPDATED_LABEL_NAME, actual.get().getName());
     }
 
     @Test
-    void testDeleteStatus() throws Exception {
-        createStatus(TEST_STATUS_NAME_1)
+    void testDeleteLabel() throws Exception {
+        createLabel(TEST_LABEL_NAME_1)
             .andExpect(status().isOk());
 
-        TaskStatus statusToDelete = statusRepository.findAll().get(0);
-        long statusId = statusToDelete.getId();
+        Label labelToDelete = labelRepository.findAll().get(0);
+        long labelId = labelToDelete.getId();
 
-        mvc.perform(delete("/api/statuses/%d".formatted(statusId))
+        mvc.perform(delete("/api/labels/%d".formatted(labelId))
                 .header(HttpHeaders.AUTHORIZATION, TOKEN_PREFIX + token))
             .andExpect(status().isOk());
 
-        assertFalse(statusRepository.existsById(statusId));
+        assertFalse(labelRepository.existsById(labelId));
     }
 
-    private ResultActions createStatus(String name) throws Exception {
-        TaskStatusRequestDTO statusRequestDTO = new TaskStatusRequestDTO(name);
+    private ResultActions createLabel(String name) throws Exception {
+        LabelRequestDTO labelRequestDTO = new LabelRequestDTO(name);
 
-        return mvc.perform(post("/api/statuses")
+        return mvc.perform(post("/api/labels")
             .header(HttpHeaders.AUTHORIZATION, TOKEN_PREFIX + token)
-            .content(testUtils.toJson(statusRequestDTO))
+            .content(testUtils.toJson(labelRequestDTO))
             .contentType(MediaType.APPLICATION_JSON));
     }
 }

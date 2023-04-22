@@ -1,0 +1,55 @@
+package hexlet.code.service;
+
+import hexlet.code.domain.dto.LabelRequestDTO;
+import hexlet.code.domain.mapper.LabelModelMapper;
+import hexlet.code.domain.model.Label;
+import hexlet.code.exception.NotFoundException;
+import hexlet.code.repository.LabelRepository;
+import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.List;
+
+@Service
+public class LabelService {
+
+    private final LabelRepository labelRepository;
+    private final LabelModelMapper labelMapper;
+
+    public LabelService(LabelRepository labelRepository,
+                        LabelModelMapper labelMapper) {
+        this.labelRepository = labelRepository;
+        this.labelMapper = labelMapper;
+    }
+
+    public Iterable<Label> findAllLabels() {
+        return labelRepository.findAll();
+    }
+
+    public List<Label> findAllLabelsById(List<Long> labelIds) {
+        List<Label> labels = new ArrayList<>();
+        labelRepository.findAllById(labelIds).forEach(labels::add);
+        return labels;
+    }
+
+    public Label findLabelById(long id) {
+        return labelRepository.findLabelById(id)
+            .orElseThrow(() -> new NotFoundException("Label with id='%d' not found!".formatted(id)));
+    }
+
+    public Label createLabel(LabelRequestDTO dto) {
+        Label newLabel = labelMapper.toLabelModel(dto);
+        return labelRepository.save(newLabel);
+    }
+
+    public Label updateLabel(long id, LabelRequestDTO dto) {
+        Label labelToUpdate = findLabelById(id);
+        labelMapper.updateLabelModel(labelToUpdate, dto);
+        return labelRepository.save(labelToUpdate);
+    }
+
+    public void deleteLabel(long id) {
+        Label existedLabel = findLabelById(id);
+        labelRepository.delete(existedLabel);
+    }
+}

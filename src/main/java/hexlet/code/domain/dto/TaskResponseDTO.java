@@ -1,6 +1,7 @@
 package hexlet.code.domain.dto;
 
 import java.time.Instant;
+import java.util.List;
 
 public class TaskResponseDTO {
 
@@ -8,6 +9,7 @@ public class TaskResponseDTO {
     private UserResponseDTO author;
     private UserResponseDTO executor;
     private TaskStatusResponseDTO taskStatus;
+    private List<LabelResponseDTO> labels;
     private String name;
     private String description;
     private Instant createdAt;
@@ -42,6 +44,14 @@ public class TaskResponseDTO {
 
     public void setTaskStatus(TaskStatusResponseDTO taskStatus) {
         this.taskStatus = taskStatus;
+    }
+
+    public List<LabelResponseDTO> getLabels() {
+        return labels;
+    }
+
+    public void setLabels(List<LabelResponseDTO> labels) {
+        this.labels = labels;
     }
 
     public String getName() {

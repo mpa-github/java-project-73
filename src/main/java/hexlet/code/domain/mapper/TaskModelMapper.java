@@ -1,70 +1,96 @@
 package hexlet.code.domain.mapper;
 
+import hexlet.code.domain.dto.LabelResponseDTO;
 import hexlet.code.domain.dto.TaskRequestDTO;
 import hexlet.code.domain.dto.TaskResponseDTO;
+import hexlet.code.domain.model.Label;
 import hexlet.code.domain.model.Task;
 import hexlet.code.domain.model.TaskStatus;
 import hexlet.code.domain.model.User;
+import hexlet.code.service.LabelService;
 import hexlet.code.service.TaskStatusService;
 import hexlet.code.service.UserService;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
+
 @Component
 public class TaskModelMapper {
 
-    private final TaskStatusModelMapper taskStatusModelMapper;
+    private final TaskStatusModelMapper taskStatusMapper;
     private final TaskStatusService statusService;
-    private final UserModelMapper userModelMapper;
+    private final LabelModelMapper labelMapper;
+    private final LabelService labelService;
+    private final UserModelMapper userMapper;
     private final UserService userService;
 
-    public TaskModelMapper(TaskStatusModelMapper taskStatusModelMapper,
+    public TaskModelMapper(TaskStatusModelMapper taskStatusMapper,
                            TaskStatusService statusService,
-                           UserModelMapper userModelMapper,
+                           LabelModelMapper labelMapper,
+                           LabelService labelService,
+                           UserModelMapper userMapper,
                            UserService userService) {
-        this.taskStatusModelMapper = taskStatusModelMapper;
+        this.taskStatusMapper = taskStatusMapper;
         this.statusService = statusService;
-        this.userModelMapper = userModelMapper;
+        this.labelMapper = labelMapper;
+        this.labelService = labelService;
+        this.userMapper = userMapper;
         this.userService = userService;
     }
 
+    // TODO find better way for mapping (!)
     public TaskResponseDTO toTaskResponseDTO(Task task) {
         TaskResponseDTO dto = new TaskResponseDTO();
+        if (task.getExecutor() != null) {
+            dto.setExecutor(userMapper.toUserResponseDTO(task.getExecutor()));
+        }
+        if (task.getLabels() != null) {
+            List<LabelResponseDTO> labelsDTO = new ArrayList<>();
+            task.getLabels().forEach(label -> labelsDTO.add(labelMapper.toLabelResponseDTO(label)));
+            labelsDTO.sort(Comparator.comparing(LabelResponseDTO::getId));
+            dto.setLabels(labelsDTO);
+        }
+        if (task.getDescription() != null) {
+            dto.setDescription(task.getDescription());
+        }
+
         dto.setId(task.getId());
-        dto.setAuthor(userModelMapper.toUserResponseDTO(task.getAuthor()));
-        dto.setExecutor(userModelMapper.toUserResponseDTO(task.getExecutor()));
-        dto.setTaskStatus(taskStatusModelMapper.toTaskStatusResponseDTO(task.getTaskStatus()));
+        dto.setAuthor(userMapper.toUserResponseDTO(task.getAuthor()));
+        dto.setTaskStatus(taskStatusMapper.toTaskStatusResponseDTO(task.getTaskStatus()));
         dto.setName(task.getName());
-        dto.setDescription(task.getDescription());
         dto.setCreatedAt(task.getCreatedAt());
         return dto;
     }
 
     public Task toTaskModel(TaskRequestDTO dto, UserDetails authDetails) {
-        String authenticatedEmail = authDetails.getUsername();
-        TaskStatus taskStatus = statusService.findStatusById(dto.getTaskStatusId());
-        User author = userService.findUserByEmail(authenticatedEmail);
-        User executor = userService.findUserById(dto.getExecutorId());
-
         Task task = new Task();
-        task.setName(dto.getName());
-        task.setDescription(dto.getDescription());
-        task.setTaskStatus(taskStatus);
-        task.setAuthor(author);
-        task.setExecutor(executor);
+        updateTaskModel(task, dto, authDetails);
         return task;
     }
 
+    // TODO find better way for mapping (!)
     public void updateTaskModel(Task task, TaskRequestDTO dto, UserDetails authDetails) {
-        String authenticatedEmail = authDetails.getUsername();
+        if (dto.getDescription() != null) {
+            task.setDescription(dto.getDescription());
+        }
+        if (dto.getExecutorId() != null) {
+            User executor = userService.findUserById(dto.getExecutorId());
+            task.setExecutor(executor);
+        }
+        if (dto.getLabelIds() != null) {
+            List<Label> labels = labelService.findAllLabelsById(dto.getLabelIds());
+            task.setLabels(labels);
+        }
+
         TaskStatus taskStatus = statusService.findStatusById(dto.getTaskStatusId());
+        String authenticatedEmail = authDetails.getUsername();
         User author = userService.findUserByEmail(authenticatedEmail);
-        User executor = userService.findUserById(dto.getExecutorId());
 
         task.setName(dto.getName());
-        task.setDescription(dto.getDescription());
         task.setTaskStatus(taskStatus);
         task.setAuthor(author);
-        task.setExecutor(executor);
     }
 }

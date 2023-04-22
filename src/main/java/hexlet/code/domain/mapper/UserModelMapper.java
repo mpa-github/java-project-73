@@ -20,10 +20,7 @@ public class UserModelMapper {
 
     public User toUserModel(UserRequestDTO dto) {
         User user = new User();
-        user.setFirstName(dto.getFirstName());
-        user.setLastName(dto.getLastName());
-        user.setEmail(dto.getEmail().toLowerCase());
-        user.setPassword(dto.getPassword());
+        updateUserModel(user, dto);
         return user;
     }
 

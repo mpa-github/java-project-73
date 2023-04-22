@@ -57,6 +57,12 @@ class TaskControllerTest {
     private static final String TEST_STATUS_NAME_1 = Status.NEW.getName();
     private static final String TEST_STATUS_NAME_2 = Status.IN_PROGRESS.getName();
 
+    private User testAuthor;
+    private User testExecutor;
+    private TaskStatus testStatusNew;
+    private TaskStatus testStatusInProgress;
+    private String authorToken;
+
     @Autowired
     private MockMvc mvc;
     @Autowired
@@ -69,12 +75,6 @@ class TaskControllerTest {
     private JWTUtils jwtUtils;
     @Autowired
     private TestUtils testUtils;
-
-    private User testAuthor;
-    private User testExecutor;
-    private TaskStatus testStatusNew;
-    private TaskStatus testStatusInProgress;
-    private String authorToken;
 
     @BeforeEach
     void beforeEach() {
@@ -166,7 +166,8 @@ class TaskControllerTest {
             TEST_UPDATED_TASK_NAME,
             TEST_UPDATED_TASK_DESCRIPTION,
             testAuthor.getId(),
-            testStatusInProgress.getId()
+            testStatusInProgress.getId(),
+            null
         );
 
         mvc.perform(put("/api/tasks/%d".formatted(taskId))
@@ -209,7 +210,8 @@ class TaskControllerTest {
             TEST_TASK_NAME,
             TEST_TASK_DESCRIPTION,
             testExecutor.getId(),
-            testStatusNew.getId()
+            testStatusNew.getId(),
+            null
         );
 
         return mvc.perform(post("/api/tasks")

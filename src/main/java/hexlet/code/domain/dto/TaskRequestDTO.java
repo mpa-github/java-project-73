@@ -2,6 +2,7 @@ package hexlet.code.domain.dto;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import java.util.List;
 
 public class TaskRequestDTO {
 
@@ -10,25 +11,26 @@ public class TaskRequestDTO {
 
     private String description;
 
-    //@NotNull (?)
-    //private long authorId;
+    private Long executorId;
 
-    private long executorId;
+    @NotNull(message = "Field 'taskStatusId' must not be null!")
+    private Long taskStatusId;
 
-    @NotNull
-    private long taskStatusId;
+    private List<Long> labelIds;
 
     public TaskRequestDTO() {
     }
 
     public TaskRequestDTO(String name,
                           String description,
-                          long executorId,
-                          long taskStatusId) {
+                          Long executorId,
+                          Long taskStatusId,
+                          List<Long> labelIds) {
         this.name = name;
         this.description = description;
         this.executorId = executorId;
         this.taskStatusId = taskStatusId;
+        this.labelIds = labelIds;
     }
 
     public String getName() {
@@ -39,11 +41,15 @@ public class TaskRequestDTO {
         return description;
     }
 
-    public long getExecutorId() {
+    public Long getExecutorId() {
         return executorId;
     }
 
-    public long getTaskStatusId() {
+    public Long getTaskStatusId() {
         return taskStatusId;
+    }
+
+    public List<Long> getLabelIds() {
+        return labelIds;
     }
 }

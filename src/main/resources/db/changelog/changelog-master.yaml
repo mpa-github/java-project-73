@@ -1,6 +1,27 @@
 databaseChangeLog:
 - changeSet:
-    id: 1681994774529-1
+    id: 1682182880492-1
+    author: MPA (generated)
+    changes:
+    - createTable:
+        columns:
+        - column:
+            autoIncrement: true
+            constraints:
+              nullable: false
+              primaryKey: true
+              primaryKeyName: labelsPK
+            name: id
+            type: BIGINT
+        - column:
+            name: created_at
+            type: TIMESTAMP
+        - column:
+            name: name
+            type: VARCHAR(255)
+        tableName: labels
+- changeSet:
+    id: 1682182880492-2
     author: MPA (generated)
     changes:
     - createTable:
@@ -21,7 +42,24 @@ databaseChangeLog:
             type: VARCHAR(255)
         tableName: statuses
 - changeSet:
-    id: 1681994774529-2
+    id: 1682182880492-3
+    author: MPA (generated)
+    changes:
+    - createTable:
+        columns:
+        - column:
+            constraints:
+              nullable: false
+            name: task_id
+            type: BIGINT
+        - column:
+            constraints:
+              nullable: false
+            name: label_id
+            type: BIGINT
+        tableName: task_label
+- changeSet:
+    id: 1682182880492-4
     author: MPA (generated)
     changes:
     - createTable:
@@ -35,11 +73,26 @@ databaseChangeLog:
             name: id
             type: BIGINT
         - column:
+            name: created_at
+            type: TIMESTAMP
+        - column:
+            name: description
+            type: VARCHAR(255)
+        - column:
             name: name
             type: VARCHAR(255)
+        - column:
+            name: author_id
+            type: BIGINT
+        - column:
+            name: executor_id
+            type: BIGINT
+        - column:
+            name: task_status_id
+            type: BIGINT
         tableName: tasks
 - changeSet:
-    id: 1681994774529-3
+    id: 1682182880492-5
     author: MPA (generated)
     changes:
     - createTable:
@@ -68,73 +121,21 @@ databaseChangeLog:
             name: password
             type: VARCHAR(255)
         tableName: users
-
-databaseChangeLog:
 - changeSet:
-    id: 1682009039777-1
-    author: MPA (generated)
-    changes:
-    - addColumn:
-        columns:
-        - column:
-            name: created_at
-            type: timestamp
-        tableName: tasks
-- changeSet:
-    id: 1682009039777-2
-    author: MPA (generated)
-    changes:
-    - addColumn:
-        columns:
-        - column:
-            name: description
-            type: varchar(255)
-        tableName: tasks
-- changeSet:
-    id: 1682009039777-3
-    author: MPA (generated)
-    changes:
-    - addColumn:
-        columns:
-        - column:
-            name: executor_id
-            type: bigint
-        tableName: tasks
-- changeSet:
-    id: 1682009039777-4
-    author: MPA (generated)
-    changes:
-    - addColumn:
-        columns:
-        - column:
-            name: task_status_id
-            type: bigint
-        tableName: tasks
-- changeSet:
-    id: 1682009039777-5
-    author: MPA (generated)
-    changes:
-    - addColumn:
-        columns:
-        - column:
-            name: user_id
-            type: bigint
-        tableName: tasks
-- changeSet:
-    id: 1682009039777-6
+    id: 1682182880492-6
     author: MPA (generated)
     changes:
     - addForeignKeyConstraint:
-        baseColumnNames: user_id
-        baseTableName: tasks
-        constraintName: FK6s1ob9k4ihi75xbxe2w0ylsdh
+        baseColumnNames: task_id
+        baseTableName: task_label
+        constraintName: FK45j1msvaecla2batb854mv44o
         deferrable: false
         initiallyDeferred: false
         referencedColumnNames: id
-        referencedTableName: users
+        referencedTableName: tasks
         validate: true
 - changeSet:
-    id: 1682009039777-7
+    id: 1682182880492-7
     author: MPA (generated)
     changes:
     - addForeignKeyConstraint:
@@ -147,7 +148,20 @@ databaseChangeLog:
         referencedTableName: users
         validate: true
 - changeSet:
-    id: 1682009039777-8
+    id: 1682182880492-8
+    author: MPA (generated)
+    changes:
+    - addForeignKeyConstraint:
+        baseColumnNames: label_id
+        baseTableName: task_label
+        constraintName: FKdcng3qpmqco6u3ofi7i939bnx
+        deferrable: false
+        initiallyDeferred: false
+        referencedColumnNames: id
+        referencedTableName: labels
+        validate: true
+- changeSet:
+    id: 1682182880492-9
     author: MPA (generated)
     changes:
     - addForeignKeyConstraint:
@@ -159,20 +173,8 @@ databaseChangeLog:
         referencedColumnNames: id
         referencedTableName: statuses
         validate: true
-
-databaseChangeLog:
 - changeSet:
-    id: 1682070592241-1
-    author: MPA (generated)
-    changes:
-    - addColumn:
-        columns:
-        - column:
-            name: author_id
-            type: bigint
-        tableName: tasks
-- changeSet:
-    id: 1682070592241-2
+    id: 1682182880492-10
     author: MPA (generated)
     changes:
     - addForeignKeyConstraint:
@@ -184,18 +186,4 @@ databaseChangeLog:
         referencedColumnNames: id
         referencedTableName: users
         validate: true
-- changeSet:
-    id: 1682070592241-3
-    author: MPA (generated)
-    changes:
-    - dropForeignKeyConstraint:
-        baseTableName: tasks
-        constraintName: FK6s1ob9k4ihi75xbxe2w0ylsdh
-- changeSet:
-    id: 1682070592241-4
-    author: MPA (generated)
-    changes:
-    - dropColumn:
-        columnName: user_id
-        tableName: tasks
 
