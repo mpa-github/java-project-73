@@ -75,4 +75,8 @@ public class WebSecurityConfig {
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
+
+    public RequestMatcher getPublicUrlPaths() {
+        return this.publicPaths;
+    }
 }

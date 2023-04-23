@@ -10,9 +10,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
-import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
-import org.springframework.security.web.util.matcher.NegatedRequestMatcher;
-import org.springframework.security.web.util.matcher.OrRequestMatcher;
 import org.springframework.security.web.util.matcher.RequestMatcher;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
@@ -25,8 +22,6 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
-import static org.springframework.http.HttpMethod.GET;
-import static org.springframework.http.HttpMethod.POST;
 
 @Component
 public class JWTAuthenticationFilter extends OncePerRequestFilter {
@@ -34,25 +29,16 @@ public class JWTAuthenticationFilter extends OncePerRequestFilter {
     private static final String TOKEN_TYPE_NAME = "Bearer";
     private final UserDetailsService userDetailsService;
     private final JWTUtils jwtUtils;
-
+    private final WebSecurityConfig securityConfig;
     private final HandlerExceptionResolver resolver;
-
-    private final RequestMatcher ignoredPaths = new OrRequestMatcher(
-        new AntPathRequestMatcher("/api/login", POST.name()),
-        new AntPathRequestMatcher("/api/users", GET.name()),
-        new AntPathRequestMatcher("/api/users", POST.name()),
-        new AntPathRequestMatcher("/api/statuses", GET.name()),
-        new AntPathRequestMatcher("/api/statuses/{id}", GET.name()),
-        new AntPathRequestMatcher("/api/tasks", GET.name()),
-        new AntPathRequestMatcher("/api/tasks/{id}", GET.name()),
-        new NegatedRequestMatcher(new AntPathRequestMatcher("/api/**"))
-    );
 
     public JWTAuthenticationFilter(AppUserDetailsService userDetailsService,
                                    JWTUtils jwtUtils,
+                                   WebSecurityConfig securityConfig,
                                    @Qualifier("handlerExceptionResolver") HandlerExceptionResolver resolver) {
         this.userDetailsService = userDetailsService;
         this.jwtUtils = jwtUtils;
+        this.securityConfig = securityConfig;
         this.resolver = resolver;
     }
 
@@ -60,7 +46,8 @@ public class JWTAuthenticationFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request,
                                     HttpServletResponse response,
                                     FilterChain filterChain) throws ServletException, IOException {
-        if (this.ignoredPaths.matches(request)) {
+        RequestMatcher ignoredPaths = securityConfig.getPublicUrlPaths();
+        if (ignoredPaths.matches(request)) {
             filterChain.doFilter(request, response);
             return;
         }

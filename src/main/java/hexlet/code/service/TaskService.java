@@ -41,7 +41,7 @@ public class TaskService {
     // TODO Only owner?
     public Task updateTask(long id, TaskRequestDTO dto, UserDetails authDetails) {
         Task taskToUpdate = findTaskById(id);
-        // TODO Better update only differences
+        // TODO Better update only differences (?)
         taskMapper.updateTaskModel(taskToUpdate, dto, authDetails);
         return taskRepository.save(taskToUpdate);
     }
