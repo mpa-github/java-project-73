@@ -4,6 +4,7 @@ import hexlet.code.exception.JWTValidationException;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtException;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.context.ApplicationContext;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -29,16 +30,16 @@ public class JWTAuthenticationFilter extends OncePerRequestFilter {
     private static final String TOKEN_TYPE_NAME = "Bearer";
     private final UserDetailsService userDetailsService;
     private final JWTUtils jwtUtils;
-    private final WebSecurityConfig securityConfig;
+    private final ApplicationContext context;
     private final HandlerExceptionResolver resolver;
 
     public JWTAuthenticationFilter(AppUserDetailsService userDetailsService,
                                    JWTUtils jwtUtils,
-                                   WebSecurityConfig securityConfig,
+                                   ApplicationContext context,
                                    @Qualifier("handlerExceptionResolver") HandlerExceptionResolver resolver) {
         this.userDetailsService = userDetailsService;
         this.jwtUtils = jwtUtils;
-        this.securityConfig = securityConfig;
+        this.context = context;
         this.resolver = resolver;
     }
 
@@ -46,7 +47,7 @@ public class JWTAuthenticationFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request,
                                     HttpServletResponse response,
                                     FilterChain filterChain) throws ServletException, IOException {
-        RequestMatcher ignoredPaths = securityConfig.getPublicUrlPaths();
+        RequestMatcher ignoredPaths = context.getBean(WebSecurityConfig.class).getPublicUrlPaths();
         if (ignoredPaths.matches(request)) {
             filterChain.doFilter(request, response);
             return;
