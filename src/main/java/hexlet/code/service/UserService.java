@@ -35,6 +35,11 @@ public class UserService {
             .orElseThrow(() -> new NotFoundException("User with id='%d' not found!".formatted(id)));
     }
 
+    // TODO For Hibernate request optimization
+    public User getUserReferenceById(long id) {
+        return userRepository.getReferenceById(id);
+    }
+
     public User findUserByEmail(String email) {
         return userRepository.findUserByEmailIgnoreCase(email)
             .orElseThrow(() -> new NotFoundException("User with email '%s' not found!".formatted(email)));

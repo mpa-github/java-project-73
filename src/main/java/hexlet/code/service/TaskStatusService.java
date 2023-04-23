@@ -28,6 +28,11 @@ public class TaskStatusService {
             .orElseThrow(() -> new NotFoundException("Status with id='%d' not found!".formatted(id)));
     }
 
+    // TODO For Hibernate request optimization
+    public TaskStatus getStatusReferenceById(long id) {
+        return statusRepository.getReferenceById(id);
+    }
+
     public TaskStatus createStatus(TaskStatusRequestDTO dto) {
         TaskStatus newStatus = statusMapper.toTaskStatusModel(dto);
         return statusRepository.save(newStatus);

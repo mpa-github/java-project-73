@@ -1,5 +1,6 @@
 package hexlet.code.service;
 
+import com.querydsl.core.types.Predicate;
 import hexlet.code.domain.dto.TaskRequestDTO;
 import hexlet.code.domain.mapper.TaskModelMapper;
 import hexlet.code.domain.model.Task;
@@ -20,18 +21,16 @@ public class TaskService {
         this.taskMapper = taskMapper;
     }
 
-    public Iterable<Task> findAllTasks() {
-        return taskRepository.findAll();
+    public Iterable<Task> findTasksByParams(Predicate predicate) {
+        if (predicate == null) {
+            return taskRepository.findAll();
+        }
+        return taskRepository.findAll(predicate);
     }
 
     public Task findTaskById(long id) {
         return taskRepository.findTaskById(id)
             .orElseThrow(() -> new NotFoundException("Task with id='%d' not found!".formatted(id)));
-    }
-
-    public Task findTaskByParams() {
-
-        return null;
     }
 
     public Task createTask(TaskRequestDTO dto, UserDetails authDetails) {

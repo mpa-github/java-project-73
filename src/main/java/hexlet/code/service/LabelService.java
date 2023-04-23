@@ -7,8 +7,8 @@ import hexlet.code.exception.NotFoundException;
 import hexlet.code.repository.LabelRepository;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class LabelService {
@@ -27,9 +27,14 @@ public class LabelService {
     }
 
     public List<Label> findAllLabelsById(List<Long> labelIds) {
-        List<Label> labels = new ArrayList<>();
-        labelRepository.findAllById(labelIds).forEach(labels::add);
-        return labels;
+        return labelRepository.findAllById(labelIds);
+    }
+
+    // TODO For Hibernate request optimization
+    public List<Label> getAllLabelReferencesById(List<Long> labelIds) {
+        return labelIds.stream()
+            .map(labelRepository::getReferenceById)
+            .collect(Collectors.toList());
     }
 
     public Label findLabelById(long id) {

@@ -15,6 +15,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
+import javax.persistence.EntityNotFoundException;
 import javax.servlet.http.HttpServletRequest;
 import java.util.StringJoiner;
 
@@ -92,6 +93,14 @@ public class GlobalApiExceptionHandler /*extends ResponseEntityExceptionHandler*
         ApiErrorResponse apiError = buildApiError(ex, request);
         apiError.setStatusCode(HttpStatus.UNAUTHORIZED.value());
         return new ResponseEntity<>(apiError, HttpStatus.UNAUTHORIZED);
+    }
+
+    @ExceptionHandler(EntityNotFoundException.class)
+    public ResponseEntity<ApiErrorResponse> handleNotFoundException(EntityNotFoundException ex,
+                                                                    HttpServletRequest request) {
+        ApiErrorResponse apiError = buildApiError(ex, request);
+        apiError.setStatusCode(HttpStatus.BAD_REQUEST.value());
+        return new ResponseEntity<>(apiError, HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(NotTheOwnerException.class)

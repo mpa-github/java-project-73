@@ -1,10 +1,12 @@
 package hexlet.code.controller;
 
+import com.querydsl.core.types.Predicate;
 import hexlet.code.domain.dto.TaskRequestDTO;
 import hexlet.code.domain.dto.TaskResponseDTO;
 import hexlet.code.domain.mapper.TaskModelMapper;
 import hexlet.code.domain.model.Task;
 import hexlet.code.service.TaskService;
+import org.springframework.data.querydsl.binding.QuerydslPredicate;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -34,8 +36,8 @@ public class TaskController {
     }
 
     @GetMapping(path = "/tasks")
-    public List<TaskResponseDTO> findAllTasks() {
-        Iterable<Task> existedTasks = taskService.findAllTasks();
+    public List<TaskResponseDTO> findTasksByParams(@QuerydslPredicate(root = Task.class) Predicate predicate) {
+        Iterable<Task> existedTasks = taskService.findTasksByParams(predicate);
         List<TaskResponseDTO> taskDTOList = new ArrayList<>();
         existedTasks.forEach(task -> taskDTOList.add(taskMapper.toTaskResponseDTO(task)));
         taskDTOList.sort(Comparator.comparing(TaskResponseDTO::getId));
