@@ -76,7 +76,7 @@ diffChangeLog {
 liquibase {
 	activities {
 		main {
-			changeLogFile 'src/main/resources/db/changelog/changelog-master.yaml'
+			changeLogFile 'src/main/resources/db/changelog/db.changelog-master.yaml'
 			url 'jdbc:h2:./database73'
 			username 'sa'
 			password 'sa'

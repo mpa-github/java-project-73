@@ -7,6 +7,7 @@ import hexlet.code.domain.mapper.TaskModelMapper;
 import hexlet.code.domain.model.Task;
 import hexlet.code.service.TaskService;
 import org.springframework.data.querydsl.binding.QuerydslPredicate;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
@@ -51,6 +53,7 @@ public class TaskController {
     }
 
     @PostMapping(path = "/tasks")
+    @ResponseStatus(HttpStatus.CREATED)
     public TaskResponseDTO createTask(@RequestBody @Valid TaskRequestDTO dto,
                                       @AuthenticationPrincipal UserDetails authDetails) {
         Task createdTask = taskService.createTask(dto, authDetails);

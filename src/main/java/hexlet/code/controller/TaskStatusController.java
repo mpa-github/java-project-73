@@ -5,6 +5,7 @@ import hexlet.code.domain.dto.TaskStatusRequestDTO;
 import hexlet.code.domain.dto.TaskStatusResponseDTO;
 import hexlet.code.domain.model.TaskStatus;
 import hexlet.code.service.TaskStatusService;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
@@ -50,6 +52,7 @@ public class TaskStatusController {
     }
 
     @PostMapping(path = "/statuses")
+    @ResponseStatus(HttpStatus.CREATED)
     public TaskStatusResponseDTO createStatus(@RequestBody @Valid TaskStatusRequestDTO dto) {
         TaskStatus createdStatus = statusService.createStatus(dto);
         return statusMapper.toTaskStatusResponseDTO(createdStatus);

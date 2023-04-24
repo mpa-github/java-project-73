@@ -1,6 +1,6 @@
 databaseChangeLog:
 - changeSet:
-    id: 1682182880492-1
+    id: 1682355152223-1
     author: MPA (generated)
     changes:
     - createTable:
@@ -21,7 +21,7 @@ databaseChangeLog:
             type: VARCHAR(255)
         tableName: labels
 - changeSet:
-    id: 1682182880492-2
+    id: 1682355152223-2
     author: MPA (generated)
     changes:
     - createTable:
@@ -42,7 +42,7 @@ databaseChangeLog:
             type: VARCHAR(255)
         tableName: statuses
 - changeSet:
-    id: 1682182880492-3
+    id: 1682355152223-3
     author: MPA (generated)
     changes:
     - createTable:
@@ -59,7 +59,7 @@ databaseChangeLog:
             type: BIGINT
         tableName: task_label
 - changeSet:
-    id: 1682182880492-4
+    id: 1682355152223-4
     author: MPA (generated)
     changes:
     - createTable:
@@ -92,7 +92,7 @@ databaseChangeLog:
             type: BIGINT
         tableName: tasks
 - changeSet:
-    id: 1682182880492-5
+    id: 1682355152223-5
     author: MPA (generated)
     changes:
     - createTable:
@@ -122,7 +122,7 @@ databaseChangeLog:
             type: VARCHAR(255)
         tableName: users
 - changeSet:
-    id: 1682182880492-6
+    id: 1682355152223-6
     author: MPA (generated)
     changes:
     - addForeignKeyConstraint:
@@ -135,7 +135,7 @@ databaseChangeLog:
         referencedTableName: tasks
         validate: true
 - changeSet:
-    id: 1682182880492-7
+    id: 1682355152223-7
     author: MPA (generated)
     changes:
     - addForeignKeyConstraint:
@@ -148,7 +148,7 @@ databaseChangeLog:
         referencedTableName: users
         validate: true
 - changeSet:
-    id: 1682182880492-8
+    id: 1682355152223-8
     author: MPA (generated)
     changes:
     - addForeignKeyConstraint:
@@ -161,7 +161,7 @@ databaseChangeLog:
         referencedTableName: labels
         validate: true
 - changeSet:
-    id: 1682182880492-9
+    id: 1682355152223-9
     author: MPA (generated)
     changes:
     - addForeignKeyConstraint:
@@ -174,7 +174,7 @@ databaseChangeLog:
         referencedTableName: statuses
         validate: true
 - changeSet:
-    id: 1682182880492-10
+    id: 1682355152223-10
     author: MPA (generated)
     changes:
     - addForeignKeyConstraint:
