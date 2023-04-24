@@ -55,7 +55,8 @@ public class JWTAuthenticationFilter extends OncePerRequestFilter {
 
         String authHeader = request.getHeader(AUTHORIZATION);
         if (authHeader == null || !authHeader.startsWith(TOKEN_TYPE_NAME)) {
-            Exception ex = new JWTValidationException(authHeader);
+            Exception ex = new JWTValidationException("Authorization header is empty or incorrect!"
+                + authHeader.replaceFirst(TOKEN_TYPE_NAME, ""));
             resolver.resolveException(request, response, null, ex);
             return;
         }
