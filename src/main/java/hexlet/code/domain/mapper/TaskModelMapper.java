@@ -78,18 +78,18 @@ public class TaskModelMapper {
             task.setDescription(dto.getDescription());
         }
         if (dto.getExecutorId() != null) {
-            //User executor = userService.findUserById(dto.getExecutorId());
-            User executor = userService.getUserReferenceById(dto.getExecutorId());
+            User executor = userService.findUserById(dto.getExecutorId());
+            //User executor = userService.getUserReferenceById(dto.getExecutorId());
             task.setExecutor(executor);
         }
         if (dto.getLabelIds() != null) {
-            //List<Label> labels = labelService.findAllLabelsById(dto.getLabelIds());
-            List<Label> labels = labelService.getAllLabelReferencesById(dto.getLabelIds());
+            List<Label> labels = labelService.findAllLabelsById(dto.getLabelIds());
+            //List<Label> labels = labelService.getAllLabelReferencesById(dto.getLabelIds());
             task.setLabels(labels);
         }
 
-        //TaskStatus taskStatus = statusService.findStatusById(dto.getTaskStatusId());
-        TaskStatus taskStatus = statusService.getStatusReferenceById(dto.getTaskStatusId());
+        TaskStatus taskStatus = statusService.findStatusById(dto.getTaskStatusId());
+        //TaskStatus taskStatus = statusService.getStatusReferenceById(dto.getTaskStatusId());
         String authenticatedEmail = authDetails.getUsername();
         User author = userService.findUserByEmail(authenticatedEmail);
 
