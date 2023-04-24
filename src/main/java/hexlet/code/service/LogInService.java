@@ -28,6 +28,6 @@ public class LogInService {
         if (!bCryptPasswordEncoder.matches(passwordToCheck, existedUser.getPassword())) {
             throw new SignInException("Sign in failed. Incorrect password!");
         }
-        return jwtUtils.generateToken(existedUser.getEmail());
+        return jwtUtils.generateToken(existedUser);
     }
 }

@@ -82,7 +82,7 @@ class TaskControllerTest {
         testExecutor = userRepository.save(testUtils.buildDefaultUser(TEST_EMAIL_2));
         testStatusNew = statusRepository.save(testUtils.buildDefaultStatus(TEST_STATUS_NAME_1));
         testStatusInProgress = statusRepository.save(testUtils.buildDefaultStatus(TEST_STATUS_NAME_2));
-        authorToken = jwtUtils.generateToken(testAuthor.getEmail());
+        authorToken = jwtUtils.generateToken(testAuthor);
     }
 
     @AfterEach
