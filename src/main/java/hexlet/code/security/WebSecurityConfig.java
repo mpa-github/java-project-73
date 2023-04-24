@@ -37,6 +37,7 @@ public class WebSecurityConfig {
         new AntPathRequestMatcher("/api/login", POST.name()),
         new AntPathRequestMatcher("/api/users", GET.name()),
         new AntPathRequestMatcher("/api/users", POST.name()),
+        new AntPathRequestMatcher("/api/users/{id}", GET.name()),
         new AntPathRequestMatcher("/api/statuses", GET.name()),
         new AntPathRequestMatcher("/api/statuses/{id}", GET.name()),
         new AntPathRequestMatcher("/api/tasks", GET.name()),
