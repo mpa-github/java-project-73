@@ -94,8 +94,8 @@ class TaskControllerTest {
 
     @Test
     void testFindAllTasks() throws Exception {
-        createTask().andExpect(status().isOk());
-        createTask().andExpect(status().isOk());
+        createTask().andExpect(status().isCreated());
+        createTask().andExpect(status().isCreated());
 
         MockHttpServletResponse response = mvc.perform(get("/api/tasks"))
             .andExpect(status().isOk())
@@ -115,7 +115,7 @@ class TaskControllerTest {
 
     @Test
     void findTaskById() throws Exception {
-        createTask().andExpect(status().isOk());
+        createTask().andExpect(status().isCreated());
 
         Task existedTask = taskRepository.findAll().get(0);
         long taskId = existedTask.getId();
@@ -145,7 +145,7 @@ class TaskControllerTest {
         assertEquals(expectedCountInDB, actualCount);
 
         createTask()
-            .andExpect(status().isOk())
+            .andExpect(status().isCreated())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON))
             .andExpect(jsonPath("$.name", is(TEST_TASK_NAME)))
             .andExpect(jsonPath("$.description", is(TEST_TASK_DESCRIPTION)));
@@ -158,7 +158,7 @@ class TaskControllerTest {
 
     @Test
     void testUpdateTask() throws Exception {
-        createTask().andExpect(status().isOk());
+        createTask().andExpect(status().isCreated());
 
         Task taskToUpdate = taskRepository.findAll().get(0);
         long taskId = taskToUpdate.getId();
@@ -193,7 +193,7 @@ class TaskControllerTest {
 
     @Test
     void testDeleteTask() throws Exception {
-        createTask().andExpect(status().isOk());
+        createTask().andExpect(status().isCreated());
 
         Task taskToDelete = taskRepository.findAll().get(0);
         long taskId = taskToDelete.getId();

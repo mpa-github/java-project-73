@@ -83,10 +83,10 @@ class LabelControllerTest {
     @Test
     void testFindAllLabels() throws Exception {
         createLabel(TEST_LABEL_NAME_1)
-            .andExpect(status().isOk());
+            .andExpect(status().isCreated());
 
         createLabel(TEST_LABEL_NAME_2)
-            .andExpect(status().isOk());
+            .andExpect(status().isCreated());
 
         MockHttpServletResponse response = mvc.perform(get("/api/labels")
                 .header(HttpHeaders.AUTHORIZATION, TOKEN_PREFIX + token))
@@ -108,7 +108,7 @@ class LabelControllerTest {
     @Test
     void testFindLabelById() throws Exception {
         createLabel(TEST_LABEL_NAME_1)
-            .andExpect(status().isOk());
+            .andExpect(status().isCreated());
 
         Label existedLabel = labelRepository.findAll().get(0);
         long labelId = existedLabel.getId();
@@ -135,7 +135,7 @@ class LabelControllerTest {
         assertEquals(expectedCountInDB, actualCount);
 
         createLabel(TEST_LABEL_NAME_1)
-            .andExpect(status().isOk())
+            .andExpect(status().isCreated())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON))
             .andExpect(jsonPath("$.name", is(TEST_LABEL_NAME_1)));
 
@@ -148,7 +148,7 @@ class LabelControllerTest {
     @Test
     void testUpdateLabel() throws Exception {
         createLabel(TEST_LABEL_NAME_1)
-            .andExpect(status().isOk());
+            .andExpect(status().isCreated());
 
         Label labelToUpdate = labelRepository.findAll().get(0);
         long labelId = labelToUpdate.getId();
@@ -172,7 +172,7 @@ class LabelControllerTest {
     @Test
     void testDeleteLabel() throws Exception {
         createLabel(TEST_LABEL_NAME_1)
-            .andExpect(status().isOk());
+            .andExpect(status().isCreated());
 
         Label labelToDelete = labelRepository.findAll().get(0);
         long labelId = labelToDelete.getId();

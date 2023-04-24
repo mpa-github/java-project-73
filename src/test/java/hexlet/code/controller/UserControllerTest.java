@@ -74,10 +74,10 @@ class UserControllerTest {
     @Test
     void testFindAllUsers() throws Exception {
         registerUser(TEST_EMAIL_1)
-            .andExpect(status().isOk());
+            .andExpect(status().isCreated());
 
         registerUser(TEST_EMAIL_2)
-            .andExpect(status().isOk());
+            .andExpect(status().isCreated());
 
         MockHttpServletResponse response = mvc.perform(get("/api/users"))
             .andExpect(status().isOk())
@@ -98,7 +98,7 @@ class UserControllerTest {
     @Test
     void testFindUserById() throws Exception {
         registerUser(TEST_EMAIL_1)
-            .andExpect(status().isOk());
+            .andExpect(status().isCreated());
 
         MockHttpServletResponse signInResponse = signIn(TEST_EMAIL_1)
             .andExpect(status().isOk())
@@ -130,7 +130,7 @@ class UserControllerTest {
         assertEquals(expectedCountInDB, actualCount);
 
         registerUser(TEST_EMAIL_1)
-            .andExpect(status().isOk())
+            .andExpect(status().isCreated())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON))
             .andExpect(jsonPath("$.email", is(TEST_EMAIL_1)));
 
@@ -143,7 +143,7 @@ class UserControllerTest {
     @Test
     void testUpdateUser() throws Exception {
         registerUser(TEST_EMAIL_1)
-            .andExpect(status().isOk());
+            .andExpect(status().isCreated());
 
         MockHttpServletResponse signInResponse = signIn(TEST_EMAIL_1)
             .andExpect(status().isOk())
@@ -173,7 +173,7 @@ class UserControllerTest {
     @Test
     void testDeleteUser() throws Exception {
         registerUser(TEST_EMAIL_1)
-            .andExpect(status().isOk());
+            .andExpect(status().isCreated());
 
         MockHttpServletResponse signInResponse = signIn(TEST_EMAIL_1)
             .andExpect(status().isOk())

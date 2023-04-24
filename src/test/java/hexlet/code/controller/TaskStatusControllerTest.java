@@ -81,10 +81,10 @@ class TaskStatusControllerTest {
     @Test
     void testFindAllStatuses() throws Exception {
         createStatus(TEST_STATUS_NAME_1)
-            .andExpect(status().isOk());
+            .andExpect(status().isCreated());
 
         createStatus(TEST_STATUS_NAME_2)
-            .andExpect(status().isOk());
+            .andExpect(status().isCreated());
 
         MockHttpServletResponse response = mvc.perform(get("/api/statuses"))
             .andExpect(status().isOk())
@@ -105,7 +105,7 @@ class TaskStatusControllerTest {
     @Test
     void testFindStatusById() throws Exception {
         createStatus(TEST_STATUS_NAME_1)
-            .andExpect(status().isOk());
+            .andExpect(status().isCreated());
 
         TaskStatus existedStatus = statusRepository.findAll().get(0);
         long statusId = existedStatus.getId();
@@ -131,7 +131,7 @@ class TaskStatusControllerTest {
         assertEquals(expectedCountInDB, actualCount);
 
         createStatus(TEST_STATUS_NAME_1)
-            .andExpect(status().isOk())
+            .andExpect(status().isCreated())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON))
             .andExpect(jsonPath("$.name", is(TEST_STATUS_NAME_1)));
 
@@ -144,7 +144,7 @@ class TaskStatusControllerTest {
     @Test
     void testUpdateStatus() throws Exception {
         createStatus(TEST_STATUS_NAME_1)
-            .andExpect(status().isOk());
+            .andExpect(status().isCreated());
 
         TaskStatus statusToUpdate = statusRepository.findAll().get(0);
         long statusId = statusToUpdate.getId();
@@ -168,7 +168,7 @@ class TaskStatusControllerTest {
     @Test
     void testDeleteStatus() throws Exception {
         createStatus(TEST_STATUS_NAME_1)
-            .andExpect(status().isOk());
+            .andExpect(status().isCreated());
 
         TaskStatus statusToDelete = statusRepository.findAll().get(0);
         long statusId = statusToDelete.getId();
