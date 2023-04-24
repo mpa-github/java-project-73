@@ -18,7 +18,7 @@ test-report: # Check code coverage
 	./gradlew jacocoTestReport
 
 run: # Run app in development
-	SPRING_PROFILES_ACTIVE=dev ./build/install/app/bin/app
+	PROFILE=dev ./build/install/app/bin/app
 
 migration: # Generate migrations
 	./gradlew diffChangeLog

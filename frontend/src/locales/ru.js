@@ -4,6 +4,7 @@ const ru = {
     users: 'Пользователи',
     statuses: 'Статусы',
     status: 'Статус',
+    author: 'Автор',
     executor: 'Исполнитель',
     label: 'Метка',
     labels: 'Метки',

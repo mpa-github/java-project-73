@@ -1,5 +1,6 @@
 package hexlet.code.controller;
 
+import com.rollbar.notifier.Rollbar;
 import hexlet.code.domain.mapper.UserModelMapper;
 import hexlet.code.domain.dto.UserRequestDTO;
 import hexlet.code.domain.dto.UserResponseDTO;
@@ -29,10 +30,12 @@ public class UserController {
 
     private final UserService userService;
     private final UserModelMapper userMapper;
+    private final Rollbar rollbar;
 
-    public UserController(UserService userService, UserModelMapper userMapper) {
+    public UserController(UserService userService, UserModelMapper userMapper, Rollbar rollbar) {
         this.userService = userService;
         this.userMapper = userMapper;
+        this.rollbar = rollbar;
     }
 
     @GetMapping(path = "/users")
