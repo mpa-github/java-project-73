@@ -69,7 +69,7 @@ class LabelControllerTest {
     @BeforeEach
     void beforeEach() {
         User testUser = userRepository.save(testUtils.buildDefaultUser());
-        token = jwtUtils.generateToken(testUser);
+        token = jwtUtils.generateToken(testUser.getEmail());
     }
 
     @AfterEach

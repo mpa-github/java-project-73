@@ -1,6 +1,5 @@
 package hexlet.code.security;
 
-import hexlet.code.domain.model.User;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
@@ -27,7 +26,7 @@ public class JWTUtils {
         this.key = Keys.hmacShaKeyFor(Decoders.BASE64.decode(base64EncodedString));
     }
 
-    public String generateToken(User user) {
+    public String generateToken(String email) {
         ZonedDateTime systemTimestamp = ZonedDateTime.now();
         Date creationDate = Date.from(systemTimestamp.toInstant());
         Date expirationDate = Date.from(systemTimestamp.plusHours(24).toInstant());
@@ -35,7 +34,7 @@ public class JWTUtils {
         return Jwts.builder()
             .setSubject(JWT_SUBJECT)
             .setIssuer(JWT_ISSUER)
-            .claim("email", user.getEmail())
+            .claim("email", email)
             .setIssuedAt(creationDate)
             .setExpiration(expirationDate)
             .signWith(key, SignatureAlgorithm.HS256)
