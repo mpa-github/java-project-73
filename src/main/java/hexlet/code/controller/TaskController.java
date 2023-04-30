@@ -22,7 +22,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 
 @RestController
@@ -39,10 +38,9 @@ public class TaskController {
 
     @GetMapping(path = "/tasks")
     public List<TaskResponseDTO> findTasksByParams(@QuerydslPredicate(root = Task.class) Predicate predicate) {
-        Iterable<Task> existedTasks = taskService.findTasksByParams(predicate);
+        List<Task> existedTasks = taskService.findTasksByParams(predicate);
         List<TaskResponseDTO> taskDTOList = new ArrayList<>();
         existedTasks.forEach(task -> taskDTOList.add(taskMapper.toTaskResponseDTO(task)));
-        taskDTOList.sort(Comparator.comparing(TaskResponseDTO::getId));
         return taskDTOList;
     }
 

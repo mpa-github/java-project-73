@@ -22,8 +22,8 @@ public class LabelService {
         this.labelMapper = labelMapper;
     }
 
-    public Iterable<Label> findAllLabels() {
-        return labelRepository.findAll();
+    public List<Label> findAllLabels() {
+        return labelRepository.findAllByOrderByIdAsc();
     }
 
     public List<Label> findAllLabelsById(List<Long> labelIds) {

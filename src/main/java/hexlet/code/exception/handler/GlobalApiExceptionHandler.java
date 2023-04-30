@@ -29,7 +29,6 @@ public class GlobalApiExceptionHandler /*extends ResponseEntityExceptionHandler*
                                                                           HttpServletRequest request) {
         ApiErrorResponse apiError = buildApiError(ex, request);
         apiError.setStatusCode(HttpStatus.UNAUTHORIZED.value());
-        //apiError.setMessage("Custom error message - AuthenticationException.class");
         return new ResponseEntity<>(apiError, HttpStatus.UNAUTHORIZED);
         //return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(apiError);
     }
@@ -91,8 +90,8 @@ public class GlobalApiExceptionHandler /*extends ResponseEntityExceptionHandler*
     public ResponseEntity<ApiErrorResponse> handleNotFoundException(NotFoundException ex,
                                                                     HttpServletRequest request) {
         ApiErrorResponse apiError = buildApiError(ex, request);
-        apiError.setStatusCode(HttpStatus.UNAUTHORIZED.value());
-        return new ResponseEntity<>(apiError, HttpStatus.UNAUTHORIZED);
+        apiError.setStatusCode(HttpStatus.NOT_FOUND.value());
+        return new ResponseEntity<>(apiError, HttpStatus.NOT_FOUND);
     }
 
     @ExceptionHandler(EntityNotFoundException.class)

@@ -191,6 +191,35 @@ class UserControllerTest {
         assertFalse(userRepository.existsById(userId));
     }
 
+    @Test
+    void testUpdateOrDeleteUserByNotTheOwner() throws Exception {
+        registerUser(TEST_EMAIL_1)
+            .andExpect(status().isCreated());
+
+        registerUser(TEST_EMAIL_2)
+            .andExpect(status().isCreated());
+
+        MockHttpServletResponse signInResponse = signIn(TEST_EMAIL_2)
+            .andExpect(status().isOk())
+            .andReturn().getResponse();
+
+        String jwtToken = signInResponse.getContentAsString(UTF_8);
+
+        User userToUpdateOrDelete = userRepository.findAll().get(0);
+        long userId = userToUpdateOrDelete.getId();
+        UserRequestDTO dto = buildUpdateLastNameDTO(TEST_EMAIL_1, TEST_UPDATED_LAST_NAME);
+
+        mvc.perform(put("/api/users/%d".formatted(userId))
+                .header(HttpHeaders.AUTHORIZATION, TOKEN_PREFIX + jwtToken)
+                .content(utils.toJson(dto))
+                .contentType(MediaType.APPLICATION_JSON))
+            .andExpect(status().isForbidden());
+
+        mvc.perform(delete("/api/users/%d".formatted(userId))
+                .header(HttpHeaders.AUTHORIZATION, TOKEN_PREFIX + jwtToken))
+            .andExpect(status().isForbidden());
+    }
+
     private ResultActions registerUser(String email) throws Exception {
         UserRequestDTO userRequestDTO = new UserRequestDTO(
             email,

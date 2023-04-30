@@ -72,7 +72,7 @@ public class TaskModelMapper {
     }
 
     // TODO find better way for mapping (!)
-    // TODO Use JPA ModelReferences for request optimization to DB
+    // TODO Use JPA ModelReferences for request to DB optimization
     public void updateTaskModel(Task task, TaskRequestDTO dto, UserDetails authDetails) {
         if (dto.getDescription() != null) {
             task.setDescription(dto.getDescription());

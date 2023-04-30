@@ -18,7 +18,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 
 // TODO Validate dto field names (can me extra now)
@@ -38,10 +37,9 @@ public class TaskStatusController {
 
     @GetMapping(path = "/statuses")
     public List<TaskStatusResponseDTO> findAllStatuses() {
-        Iterable<TaskStatus> existedStatuses = statusService.findAllStatuses();
+        List<TaskStatus> existedStatuses = statusService.findAllStatuses();
         List<TaskStatusResponseDTO> statusDTOList = new ArrayList<>();
         existedStatuses.forEach(status -> statusDTOList.add(statusMapper.toTaskStatusResponseDTO(status)));
-        statusDTOList.sort(Comparator.comparing(TaskStatusResponseDTO::getId));
         return statusDTOList;
     }
 

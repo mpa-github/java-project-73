@@ -11,6 +11,8 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class UserService {
 
@@ -26,8 +28,8 @@ public class UserService {
         this.bCryptPasswordEncoder = bCryptPasswordEncoder;
     }
 
-    public Iterable<User> findAllUsers() {
-        return userRepository.findAll();
+    public List<User> findAllUsers() {
+        return userRepository.findAllByOrderByIdAsc();
     }
 
     public User findUserById(long id) {

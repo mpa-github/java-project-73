@@ -7,6 +7,8 @@ import hexlet.code.exception.NotFoundException;
 import hexlet.code.repository.TaskStatusRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class TaskStatusService {
 
@@ -19,8 +21,8 @@ public class TaskStatusService {
         this.statusMapper = statusMapper;
     }
 
-    public Iterable<TaskStatus> findAllStatuses() {
-        return statusRepository.findAll();
+    public List<TaskStatus> findAllStatuses() {
+        return statusRepository.findAllByOrderByIdAsc();
     }
 
     public TaskStatus findStatusById(long id) {

@@ -5,6 +5,9 @@ import hexlet.code.domain.dto.UserRequestDTO;
 import hexlet.code.domain.dto.UserResponseDTO;
 import hexlet.code.domain.model.User;
 import hexlet.code.service.UserService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -20,7 +23,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 
 // TODO Validate dto field names (can be extra fields now)
@@ -37,21 +39,35 @@ public class UserController {
         this.userMapper = userMapper;
     }
 
+    @Operation(summary = "Get list of all users")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "List of all users"),
+    })
     @GetMapping(path = "/users")
     public List<UserResponseDTO> findAllUsers() {
-        Iterable<User> existedUsers = userService.findAllUsers();
+        List<User> existedUsers = userService.findAllUsers();
         List<UserResponseDTO> userDTOList = new ArrayList<>();
         existedUsers.forEach(user -> userDTOList.add(userMapper.toUserResponseDTO(user)));
-        userDTOList.sort(Comparator.comparing(UserResponseDTO::getId));
         return userDTOList;
     }
 
+    @Operation(summary = "Get specific user by his id")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "User found"),
+        @ApiResponse(responseCode = "404", description = "User with that id not found")
+    })
     @GetMapping(path = "/users/{id}")
     public UserResponseDTO findUserById(@PathVariable(name = "id") long id) {
         User existedUser = userService.findUserById(id);
         return userMapper.toUserResponseDTO(existedUser);
     }
 
+    @Operation(summary = "Register new user")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "201", description = "User registered"),
+        @ApiResponse(responseCode = "404", description = "User with that id not found"),
+        @ApiResponse(responseCode = "422", description = "User data is incorrect"),
+    })
     @PostMapping(path = "/users")
     @ResponseStatus(HttpStatus.CREATED)
     public UserResponseDTO registerUser(@RequestBody @Valid UserRequestDTO dto) {
@@ -59,6 +75,13 @@ public class UserController {
         return userMapper.toUserResponseDTO(createdUser);
     }
 
+    @Operation(summary = "Update user by his id")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "User updated"),
+        @ApiResponse(responseCode = "403", description = "Access denied for this user"),
+        @ApiResponse(responseCode = "404", description = "User with that id not found"),
+        @ApiResponse(responseCode = "422", description = "User data is incorrect")
+    })
     @PutMapping(path = "/users/{id}")
     public UserResponseDTO updateUser(@RequestBody @Valid UserRequestDTO dto,
                                       @PathVariable(name = "id") long id,
@@ -67,6 +90,12 @@ public class UserController {
         return userMapper.toUserResponseDTO(updatedUser);
     }
 
+    @Operation(summary = "Delete user by his id")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "User deleted"),
+        @ApiResponse(responseCode = "403", description = "Access denied for this user"),
+        @ApiResponse(responseCode = "404", description = "User with that id not found")
+    })
     @DeleteMapping(path = "/users/{id}")
     public void deleteUser(@PathVariable(name = "id") long id,
                            @AuthenticationPrincipal UserDetails authDetails) {

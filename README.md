@@ -17,6 +17,10 @@ Registration and authentication are required to work with the system. <br>
 
 <https://java-project-73-production-23c7.up.railway.app/>
 
+### PaaS Render
+
+<...>
+
 ## Unix
 ### Setup
 

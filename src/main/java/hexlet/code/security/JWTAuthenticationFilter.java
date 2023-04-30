@@ -10,6 +10,7 @@ import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.security.web.util.matcher.RequestMatcher;
 import org.springframework.stereotype.Component;
@@ -47,6 +48,7 @@ public class JWTAuthenticationFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request,
                                     HttpServletResponse response,
                                     FilterChain filterChain) throws ServletException, IOException {
+        // TODO Find better way to get PublicUrlPaths from WebSecurityConfig bean
         RequestMatcher ignoredPaths = context.getBean(WebSecurityConfig.class).getPublicUrlPaths();
         if (ignoredPaths.matches(request)) {
             filterChain.doFilter(request, response);
@@ -55,8 +57,8 @@ public class JWTAuthenticationFilter extends OncePerRequestFilter {
 
         String authHeader = request.getHeader(AUTHORIZATION);
         if (authHeader == null/* || !authHeader.startsWith(TOKEN_TYPE_NAME)*/) {
-            Exception ex = new JWTValidationException("Authorization header is empty or incorrect!");
-            resolver.resolveException(request, response, null, ex);
+            Exception jwtEx = new JWTValidationException("Authorization header is empty or incorrect!");
+            resolver.resolveException(request, response, null, jwtEx);
             return;
         }
 
@@ -69,10 +71,18 @@ public class JWTAuthenticationFilter extends OncePerRequestFilter {
             return;
         }
 
-        String email = (String) claims.get("email"); // TODO mb extract email with JWTUtils.getEmail()?
+        String email = (String) claims.get("email");
         SecurityContext securityContext = SecurityContextHolder.getContext();
+        // TODO remove 'if' statement?
         if (!email.isBlank() && securityContext.getAuthentication() == null) {
-            UserDetails userDetails = userDetailsService.loadUserByUsername(email);
+            UserDetails userDetails;
+            try {
+                userDetails = userDetailsService.loadUserByUsername(email);
+            } catch (UsernameNotFoundException ex) {
+                Exception jwtEx = new JWTValidationException("The user of authentication token does not exist!");
+                resolver.resolveException(request, response, null, jwtEx);
+                return;
+            }
             var springAuthToken = new UsernamePasswordAuthenticationToken(
                 userDetails,
                 null,

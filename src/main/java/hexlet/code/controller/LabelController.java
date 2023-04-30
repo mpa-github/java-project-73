@@ -18,7 +18,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 
 @RestController
@@ -36,10 +35,9 @@ public class LabelController {
 
     @GetMapping(path = "/labels")
     public List<LabelResponseDTO> findAllLabels() {
-        Iterable<Label> existedLabels = labelService.findAllLabels();
+        List<Label> existedLabels = labelService.findAllLabels();
         List<LabelResponseDTO> labelDTOList = new ArrayList<>();
         existedLabels.forEach(label -> labelDTOList.add(labelMapper.toLabelResponseDTO(label)));
-        labelDTOList.sort(Comparator.comparing(LabelResponseDTO::getId));
         return labelDTOList;
     }
 

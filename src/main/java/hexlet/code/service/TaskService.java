@@ -7,8 +7,11 @@ import hexlet.code.domain.model.Task;
 import hexlet.code.exception.NotFoundException;
 import hexlet.code.exception.NotTheOwnerException;
 import hexlet.code.repository.TaskRepository;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 public class TaskService {
@@ -21,11 +24,11 @@ public class TaskService {
         this.taskMapper = taskMapper;
     }
 
-    public Iterable<Task> findTasksByParams(Predicate predicate) {
+    public List<Task> findTasksByParams(Predicate predicate) {
         if (predicate == null) {
-            return taskRepository.findAll();
+            return taskRepository.findAllByOrderByIdAsc();
         }
-        return taskRepository.findAll(predicate);
+        return taskRepository.findAll(predicate, Sort.by(Sort.Direction.ASC, "id"));
     }
 
     public Task findTaskById(long id) {
@@ -38,10 +41,9 @@ public class TaskService {
         return taskRepository.save(newTask);
     }
 
-    // TODO Only owner?
     public Task updateTask(long id, TaskRequestDTO dto, UserDetails authDetails) {
         Task taskToUpdate = findTaskById(id);
-        // TODO Better update only differences (?)
+        validateOwnerByEmail(taskToUpdate.getAuthor().getEmail(), authDetails);
         taskMapper.updateTaskModel(taskToUpdate, dto, authDetails);
         return taskRepository.save(taskToUpdate);
     }

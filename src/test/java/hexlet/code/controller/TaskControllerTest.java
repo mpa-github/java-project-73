@@ -62,6 +62,7 @@ class TaskControllerTest {
     private TaskStatus testStatusNew;
     private TaskStatus testStatusInProgress;
     private String authorToken;
+    private String executorToken;
 
     @Autowired
     private MockMvc mvc;
@@ -83,6 +84,7 @@ class TaskControllerTest {
         testStatusNew = statusRepository.save(testUtils.buildDefaultStatus(TEST_STATUS_NAME_1));
         testStatusInProgress = statusRepository.save(testUtils.buildDefaultStatus(TEST_STATUS_NAME_2));
         authorToken = jwtUtils.generateToken(testAuthor);
+        executorToken = jwtUtils.generateToken(testExecutor);
     }
 
     @AfterEach
@@ -203,6 +205,31 @@ class TaskControllerTest {
             .andExpect(status().isOk());
 
         assertFalse(taskRepository.existsById(taskId));
+    }
+
+    @Test
+    void testUpdateOrDeleteTaskByNotTheOwner() throws Exception {
+        createTask().andExpect(status().isCreated());
+
+        Task taskToUpdateOrDelete = taskRepository.findAll().get(0);
+        long taskId = taskToUpdateOrDelete.getId();
+        TaskRequestDTO taskRequestDTO = new TaskRequestDTO(
+            TEST_UPDATED_TASK_NAME,
+            TEST_UPDATED_TASK_DESCRIPTION,
+            testAuthor.getId(),
+            testStatusInProgress.getId(),
+            null
+        );
+
+        mvc.perform(put("/api/tasks/%d".formatted(taskId))
+                .header(HttpHeaders.AUTHORIZATION, TOKEN_PREFIX + executorToken)
+                .content(testUtils.toJson(taskRequestDTO))
+                .contentType(MediaType.APPLICATION_JSON))
+            .andExpect(status().isForbidden());
+
+        mvc.perform(delete("/api/tasks/%d".formatted(taskId))
+                .header(HttpHeaders.AUTHORIZATION, TOKEN_PREFIX + executorToken))
+            .andExpect(status().isForbidden());
     }
 
     private ResultActions createTask() throws Exception {
