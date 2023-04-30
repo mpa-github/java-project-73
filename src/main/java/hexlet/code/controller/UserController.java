@@ -78,6 +78,7 @@ public class UserController {
     @Operation(summary = "Update user by his id")
     @ApiResponses(value = {
         @ApiResponse(responseCode = "200", description = "User updated"),
+        @ApiResponse(responseCode = "401", description = "Unauthorized request"),
         @ApiResponse(responseCode = "403", description = "Access denied for this user"),
         @ApiResponse(responseCode = "404", description = "User with that id not found"),
         @ApiResponse(responseCode = "422", description = "User data is incorrect")
@@ -93,6 +94,7 @@ public class UserController {
     @Operation(summary = "Delete user by his id")
     @ApiResponses(value = {
         @ApiResponse(responseCode = "200", description = "User deleted"),
+        @ApiResponse(responseCode = "401", description = "Unauthorized request"),
         @ApiResponse(responseCode = "403", description = "Access denied for this user"),
         @ApiResponse(responseCode = "404", description = "User with that id not found")
     })
