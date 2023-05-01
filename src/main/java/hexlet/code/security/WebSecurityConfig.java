@@ -24,7 +24,7 @@ import static org.springframework.http.HttpMethod.POST;
 
 @Configuration
 @EnableWebSecurity
-// To use @PreAuthorize("SpEL — Spring Expression Language")
+// To use @PreAuthorize in controller ("SpEL — Spring Expression Language")
 // @PreAuthorize throws AccessDeniedException
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class WebSecurityConfig {

@@ -62,10 +62,10 @@ public class JWTAuthenticationFilter extends OncePerRequestFilter {
             return;
         }
 
-        String jwt = authHeader.replaceFirst(TOKEN_TYPE_NAME, "").trim();
+        String jwtToken = authHeader.replaceFirst(TOKEN_TYPE_NAME, "").trim();
         Claims claims;
         try {
-            claims = jwtUtils.validateAndRetrieveClaims(jwt);
+            claims = jwtUtils.validateAndRetrieveClaims(jwtToken);
         } catch (JwtException ex) {
             resolver.resolveException(request, response, null, ex);
             return;
@@ -82,7 +82,7 @@ public class JWTAuthenticationFilter extends OncePerRequestFilter {
             resolver.resolveException(request, response, null, jwtEx);
             return;
         }
-        var springAuthToken = buildSpringAuthToken(userDetails);
+        UsernamePasswordAuthenticationToken springAuthToken = buildSpringAuthToken(userDetails);
         springAuthToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
         securityContext.setAuthentication(springAuthToken);
         filterChain.doFilter(request, response);
