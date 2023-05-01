@@ -4,7 +4,6 @@ import hexlet.code.exception.JWTValidationException;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtException;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.context.ApplicationContext;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -29,28 +28,29 @@ import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 public class JWTAuthenticationFilter extends OncePerRequestFilter {
 
     private static final String TOKEN_TYPE_NAME = "Bearer";
-    private final UserDetailsService userDetailsService;
-    private final JWTUtils jwtUtils;
-    private final ApplicationContext context;
+    private final UserDetailsService appUserDetailsService;
     private final HandlerExceptionResolver resolver;
+    private final JWTUtils jwtUtils;
+    private RequestMatcher ignoredPaths;
 
-    public JWTAuthenticationFilter(AppUserDetailsService userDetailsService,
-                                   JWTUtils jwtUtils,
-                                   ApplicationContext context,
-                                   @Qualifier("handlerExceptionResolver") HandlerExceptionResolver resolver) {
-        this.userDetailsService = userDetailsService;
+    public JWTAuthenticationFilter(AppUserDetailsService appUserDetailsService,
+                                   @Qualifier("handlerExceptionResolver") HandlerExceptionResolver resolver,
+                                   JWTUtils jwtUtils) {
+        this.appUserDetailsService = appUserDetailsService;
         this.jwtUtils = jwtUtils;
-        this.context = context;
         this.resolver = resolver;
+    }
+
+    public void setIgnoredPaths(RequestMatcher ignoredPaths) {
+        this.ignoredPaths = ignoredPaths;
     }
 
     @Override
     protected void doFilterInternal(HttpServletRequest request,
                                     HttpServletResponse response,
                                     FilterChain filterChain) throws ServletException, IOException {
-        // TODO Find better way to get PublicUrlPaths from WebSecurityConfig bean
-        RequestMatcher ignoredPaths = context.getBean(WebSecurityConfig.class).getPublicUrlPaths();
-        if (ignoredPaths.matches(request)) {
+        // TODO Try to find better way to inject RequestMatcher from WebSecurityConfig
+        if (ignoredPaths != null && ignoredPaths.matches(request)) {
             filterChain.doFilter(request, response);
             return;
         }
@@ -73,24 +73,26 @@ public class JWTAuthenticationFilter extends OncePerRequestFilter {
 
         String email = (String) claims.get("email");
         SecurityContext securityContext = SecurityContextHolder.getContext();
-        // TODO remove 'if' statement?
-        if (!email.isBlank() && securityContext.getAuthentication() == null) {
-            UserDetails userDetails;
-            try {
-                userDetails = userDetailsService.loadUserByUsername(email);
-            } catch (UsernameNotFoundException ex) {
-                Exception jwtEx = new JWTValidationException("The user of authentication token does not exist!");
-                resolver.resolveException(request, response, null, jwtEx);
-                return;
-            }
-            var springAuthToken = new UsernamePasswordAuthenticationToken(
-                userDetails,
-                null,
-                userDetails.getAuthorities()
-            );
-            springAuthToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-            securityContext.setAuthentication(springAuthToken);
+        // TODO Should we add 'if (!email.isBlank() && securityContext.getAuthentication() == null)' ?
+        UserDetails userDetails;
+        try {
+            userDetails = appUserDetailsService.loadUserByUsername(email);
+        } catch (UsernameNotFoundException ex) {
+            Exception jwtEx = new JWTValidationException("The user of authentication token does not exist!");
+            resolver.resolveException(request, response, null, jwtEx);
+            return;
         }
+        var springAuthToken = buildSpringAuthToken(userDetails);
+        springAuthToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+        securityContext.setAuthentication(springAuthToken);
         filterChain.doFilter(request, response);
+    }
+
+    private UsernamePasswordAuthenticationToken buildSpringAuthToken(UserDetails userDetails) {
+        return new UsernamePasswordAuthenticationToken(
+            userDetails,
+            null,
+            userDetails.getAuthorities()
+        );
     }
 }

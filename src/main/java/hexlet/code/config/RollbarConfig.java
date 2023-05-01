@@ -36,7 +36,7 @@ public class RollbarConfig {
 
         // Reference ConfigBuilder.java for all the properties you can set for Rollbar
         return RollbarSpringConfigBuilder.withAccessToken(accessToken)
-            .environment("development")
+            .environment("production")
             .enabled(Objects.equals(activeProfile, "prod"))
             .build();
     }

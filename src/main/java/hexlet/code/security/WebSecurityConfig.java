@@ -65,19 +65,15 @@ public class WebSecurityConfig {
             .requestMatchers(publicPaths).permitAll()
             .anyRequest().authenticated();
 
+        jwtFilter.setIgnoredPaths(publicPaths);
         http.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
         http.exceptionHandling().authenticationEntryPoint(customAuthenticationEntryPoint);
         //http.exceptionHandling().accessDeniedHandler(customAccessDeniedHandler);
-
         return http.build();
     }
 
     @Bean // Spring will use this implementation by default
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
-    }
-
-    public RequestMatcher getPublicUrlPaths() {
-        return this.publicPaths;
     }
 }
