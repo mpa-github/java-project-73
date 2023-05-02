@@ -13,6 +13,8 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
@@ -24,10 +26,12 @@ public class Task {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
+    @NotBlank
     private String name;
 
     private String description;
 
+    @NotNull
     @ManyToOne(fetch = FetchType.EAGER)
     private TaskStatus taskStatus;
 

@@ -42,8 +42,8 @@ public class TaskModelMapper {
     }
 
     // TODO find better way for mapping (!)
-    public TaskResponseDTO toTaskResponseDTO(Task task) {
-        TaskResponseDTO dto = new TaskResponseDTO();
+    public TaskResponseDTO toTaskResponseDTO(final Task task) {
+        final TaskResponseDTO dto = new TaskResponseDTO();
         if (task.getExecutor() != null) {
             dto.setExecutor(userMapper.toUserResponseDTO(task.getExecutor()));
         }
@@ -65,15 +65,15 @@ public class TaskModelMapper {
         return dto;
     }
 
-    public Task toTaskModel(TaskRequestDTO dto, UserDetails authDetails) {
-        Task task = new Task();
+    public Task toTaskModel(final TaskRequestDTO dto, final UserDetails authDetails) {
+        final Task task = new Task();
         updateTaskModel(task, dto, authDetails);
         return task;
     }
 
     // TODO find better way for mapping (!)
     // TODO Use JPA ModelReferences for request to DB optimization
-    public void updateTaskModel(Task task, TaskRequestDTO dto, UserDetails authDetails) {
+    public void updateTaskModel(final Task task, final TaskRequestDTO dto, final UserDetails authDetails) {
         if (dto.getDescription() != null) {
             task.setDescription(dto.getDescription());
         }

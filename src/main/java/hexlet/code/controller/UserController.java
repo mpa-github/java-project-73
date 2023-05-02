@@ -28,7 +28,7 @@ import java.util.List;
 // TODO Validate dto field names (can be extra fields now)
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping("${base.url}" + "/users")
 public class UserController {
 
     private final UserService userService;
@@ -43,7 +43,7 @@ public class UserController {
     @ApiResponses(value = {
         @ApiResponse(responseCode = "200", description = "List of all users"),
     })
-    @GetMapping(path = "/users")
+    @GetMapping
     public List<UserResponseDTO> findAllUsers() {
         List<User> existedUsers = userService.findAllUsers();
         List<UserResponseDTO> userDTOList = new ArrayList<>();
@@ -56,7 +56,7 @@ public class UserController {
         @ApiResponse(responseCode = "200", description = "User found"),
         @ApiResponse(responseCode = "404", description = "User with that id not found")
     })
-    @GetMapping(path = "/users/{id}")
+    @GetMapping(path = "/{id}")
     public UserResponseDTO findUserById(@PathVariable(name = "id") long id) {
         User existedUser = userService.findUserById(id);
         return userMapper.toUserResponseDTO(existedUser);
@@ -68,7 +68,7 @@ public class UserController {
         @ApiResponse(responseCode = "404", description = "User with that id not found"),
         @ApiResponse(responseCode = "422", description = "User data is incorrect"),
     })
-    @PostMapping(path = "/users")
+    @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public UserResponseDTO registerUser(@RequestBody @Valid UserRequestDTO dto) {
         User createdUser = userService.createUser(dto);
@@ -83,7 +83,7 @@ public class UserController {
         @ApiResponse(responseCode = "404", description = "User with that id not found"),
         @ApiResponse(responseCode = "422", description = "User data is incorrect")
     })
-    @PutMapping(path = "/users/{id}")
+    @PutMapping(path = "/{id}")
     public UserResponseDTO updateUser(@RequestBody @Valid UserRequestDTO dto,
                                       @PathVariable(name = "id") long id,
                                       @AuthenticationPrincipal UserDetails authDetails) {
@@ -98,7 +98,7 @@ public class UserController {
         @ApiResponse(responseCode = "403", description = "Access denied for this user"),
         @ApiResponse(responseCode = "404", description = "User with that id not found")
     })
-    @DeleteMapping(path = "/users/{id}")
+    @DeleteMapping(path = "/{id}")
     public void deleteUser(@PathVariable(name = "id") long id,
                            @AuthenticationPrincipal UserDetails authDetails) {
         userService.deleteUser(id, authDetails);

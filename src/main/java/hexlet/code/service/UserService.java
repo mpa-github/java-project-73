@@ -52,7 +52,8 @@ public class UserService {
             throw new UserAlreadyExistException("User already exists!");
         }
         User newUser = userMapper.toUserModel(dto);
-        encodePassword(newUser);
+        String encodedPassword = bCryptPasswordEncoder.encode(newUser.getPassword());
+        newUser.setPassword(encodedPassword);
         return userRepository.save(newUser);
     }
 
@@ -62,7 +63,8 @@ public class UserService {
         User userToUpdate = findUserById(id);
         validateOwnerByEmail(userToUpdate.getEmail(), authDetails);
         userMapper.updateUserModel(userToUpdate, dto);
-        encodePassword(userToUpdate);
+        String encodedPassword = bCryptPasswordEncoder.encode(userToUpdate.getPassword());
+        userToUpdate.setPassword(encodedPassword);
         return userRepository.save(userToUpdate);
     }
 
@@ -70,12 +72,6 @@ public class UserService {
         User existedUser = findUserById(id);
         validateOwnerByEmail(existedUser.getEmail(), authDetails);
         userRepository.delete(existedUser);
-    }
-
-    private void encodePassword(User user) {
-        String userPassword = user.getPassword();
-        String encodedRow = bCryptPasswordEncoder.encode(userPassword);
-        user.setPassword(encodedRow);
     }
 
     // TODO We can use @PreAuthorize instead

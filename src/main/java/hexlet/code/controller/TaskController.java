@@ -25,7 +25,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping("${base.url}" + "/tasks")
 public class TaskController {
 
     private final TaskService taskService;
@@ -36,7 +36,7 @@ public class TaskController {
         this.taskMapper = taskMapper;
     }
 
-    @GetMapping(path = "/tasks")
+    @GetMapping
     public List<TaskResponseDTO> findTasksByParams(@QuerydslPredicate(root = Task.class) Predicate predicate) {
         List<Task> existedTasks = taskService.findTasksByParams(predicate);
         List<TaskResponseDTO> taskDTOList = new ArrayList<>();
@@ -44,13 +44,13 @@ public class TaskController {
         return taskDTOList;
     }
 
-    @GetMapping(path = "/tasks/{id}")
+    @GetMapping(path = "/{id}")
     public TaskResponseDTO findTaskById(@PathVariable(name = "id") long id) {
         Task existedTask = taskService.findTaskById(id);
         return taskMapper.toTaskResponseDTO(existedTask);
     }
 
-    @PostMapping(path = "/tasks")
+    @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public TaskResponseDTO createTask(@RequestBody @Valid TaskRequestDTO dto,
                                       @AuthenticationPrincipal UserDetails authDetails) {
@@ -58,7 +58,7 @@ public class TaskController {
         return taskMapper.toTaskResponseDTO(createdTask);
     }
 
-    @PutMapping(path = "/tasks/{id}")
+    @PutMapping(path = "/{id}")
     public TaskResponseDTO updateTask(@RequestBody @Valid TaskRequestDTO dto,
                                       @PathVariable(name = "id") long id,
                                       @AuthenticationPrincipal UserDetails authDetails) {
@@ -66,7 +66,7 @@ public class TaskController {
         return taskMapper.toTaskResponseDTO(updatedTask);
     }
 
-    @DeleteMapping(path = "/tasks/{id}")
+    @DeleteMapping(path = "/{id}")
     public void deleteTask(@PathVariable(name = "id") long id,
                            @AuthenticationPrincipal UserDetails authDetails) {
         taskService.deleteTask(id, authDetails);

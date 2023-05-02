@@ -23,7 +23,7 @@ import java.util.List;
 // TODO Validate dto field names (can me extra now)
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping("${base.url}" + "/statuses")
 public class TaskStatusController {
 
     private final TaskStatusService statusService;
@@ -35,7 +35,7 @@ public class TaskStatusController {
         this.statusMapper = statusMapper;
     }
 
-    @GetMapping(path = "/statuses")
+    @GetMapping
     public List<TaskStatusResponseDTO> findAllStatuses() {
         List<TaskStatus> existedStatuses = statusService.findAllStatuses();
         List<TaskStatusResponseDTO> statusDTOList = new ArrayList<>();
@@ -43,27 +43,27 @@ public class TaskStatusController {
         return statusDTOList;
     }
 
-    @GetMapping(path = "/statuses/{id}")
+    @GetMapping(path = "/{id}")
     public TaskStatusResponseDTO findStatusById(@PathVariable(name = "id") long id) {
         TaskStatus existedStatus = statusService.findStatusById(id);
         return statusMapper.toTaskStatusResponseDTO(existedStatus);
     }
 
-    @PostMapping(path = "/statuses")
+    @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public TaskStatusResponseDTO createStatus(@RequestBody @Valid TaskStatusRequestDTO dto) {
         TaskStatus createdStatus = statusService.createStatus(dto);
         return statusMapper.toTaskStatusResponseDTO(createdStatus);
     }
 
-    @PutMapping(path = "/statuses/{id}")
+    @PutMapping(path = "/{id}")
     public TaskStatusResponseDTO updateStatus(@RequestBody @Valid TaskStatusRequestDTO dto,
                                               @PathVariable(name = "id") long id) {
         TaskStatus updatedStatus = statusService.updateStatus(id, dto);
         return statusMapper.toTaskStatusResponseDTO(updatedStatus);
     }
 
-    @DeleteMapping(path = "/statuses/{id}")
+    @DeleteMapping(path = "/{id}")
     public void deleteStatus(@PathVariable(name = "id") long id) {
         statusService.deleteStatus(id);
     }

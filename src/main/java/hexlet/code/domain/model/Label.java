@@ -7,6 +7,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.validation.constraints.NotBlank;
 import java.time.Instant;
 
 @Entity @Table(name = "labels")
@@ -15,10 +16,8 @@ public class Label {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
+    @NotBlank
     private String name;
-
-    //@ManyToMany(mappedBy = "labels") // TODO unidirectional or bidirectional (?)
-    //private List<Task> tasks = new ArrayList<>(); // TODO (!) List or Set (?)
 
     @CreationTimestamp
     private Instant createdAt;

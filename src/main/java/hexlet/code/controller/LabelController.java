@@ -21,7 +21,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping("${base.url}" + "/labels")
 public class LabelController {
 
     private final LabelService labelService;
@@ -33,7 +33,7 @@ public class LabelController {
         this.labelMapper = labelMapper;
     }
 
-    @GetMapping(path = "/labels")
+    @GetMapping
     public List<LabelResponseDTO> findAllLabels() {
         List<Label> existedLabels = labelService.findAllLabels();
         List<LabelResponseDTO> labelDTOList = new ArrayList<>();
@@ -41,27 +41,27 @@ public class LabelController {
         return labelDTOList;
     }
 
-    @GetMapping(path = "/labels/{id}")
+    @GetMapping(path = "/{id}")
     public LabelResponseDTO findLabelById(@PathVariable(name = "id") long id) {
         Label existedLabel = labelService.findLabelById(id);
         return labelMapper.toLabelResponseDTO(existedLabel);
     }
 
-    @PostMapping(path = "/labels")
+    @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public LabelResponseDTO createLabel(@RequestBody @Valid LabelRequestDTO dto) {
         Label createdLabel = labelService.createLabel(dto);
         return labelMapper.toLabelResponseDTO(createdLabel);
     }
 
-    @PutMapping(path = "/labels/{id}")
+    @PutMapping(path = "/{id}")
     public LabelResponseDTO updateLabel(@RequestBody @Valid LabelRequestDTO dto,
                                         @PathVariable(name = "id") long id) {
         Label updatedLabel = labelService.updateLabel(id, dto);
         return labelMapper.toLabelResponseDTO(updatedLabel);
     }
 
-    @DeleteMapping(path = "/labels/{id}")
+    @DeleteMapping(path = "/{id}")
     public void deleteLabel(@PathVariable(name = "id") long id) {
         labelService.deleteLabel(id);
     }
