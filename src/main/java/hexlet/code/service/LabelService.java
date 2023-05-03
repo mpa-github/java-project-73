@@ -7,6 +7,7 @@ import hexlet.code.exception.NotFoundException;
 import hexlet.code.repository.LabelRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -26,8 +27,12 @@ public class LabelService {
         return labelRepository.findAllByOrderByIdAsc();
     }
 
+    // TODO Should we throw an ex if don't find all ids?
     public List<Label> findAllLabelsById(List<Long> labelIds) {
-        return labelRepository.findAllById(labelIds);
+        if (labelIds != null) {
+            return labelRepository.findAllById(labelIds);
+        }
+        return Collections.emptyList();
     }
 
     // TODO For Hibernate request optimization

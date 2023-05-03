@@ -3,7 +3,6 @@ package hexlet.code.controller;
 import com.fasterxml.jackson.core.type.TypeReference;
 import hexlet.code.domain.dto.TaskStatusRequestDTO;
 import hexlet.code.domain.dto.TaskStatusResponseDTO;
-import hexlet.code.domain.model.Status;
 import hexlet.code.domain.model.TaskStatus;
 import hexlet.code.domain.model.User;
 import hexlet.code.repository.TaskRepository;
@@ -47,8 +46,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 class TaskStatusControllerTest {
 
-    private static final String TEST_STATUS_NAME_1 = Status.NEW.getName();
-    private static final String TEST_STATUS_NAME_2 = Status.IN_PROGRESS.getName();
+    private static final String TEST_STATUS_NAME_1 = "Новая";
+    private static final String TEST_STATUS_NAME_2 = "В работе";
     private static final String TEST_UPDATED_STATUS_NAME = "Custom status";
     private String token;
 

@@ -1,7 +1,8 @@
-package hexlet.code.security;
+package hexlet.code.service;
 
 import hexlet.code.domain.model.User;
 import hexlet.code.repository.UserRepository;
+import hexlet.code.security.AppUserDetails;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;

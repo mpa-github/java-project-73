@@ -1,6 +1,7 @@
 package hexlet.code.security;
 
 import hexlet.code.exception.JWTValidationException;
+import hexlet.code.service.AppUserDetailsService;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtException;
 import org.springframework.beans.factory.annotation.Qualifier;

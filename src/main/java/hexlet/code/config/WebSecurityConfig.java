@@ -1,7 +1,8 @@
-package hexlet.code.security;
+package hexlet.code.config;
 
 import hexlet.code.exception.handler.CustomAccessDeniedHandler;
 import hexlet.code.exception.handler.CustomAuthenticationEntryPoint;
+import hexlet.code.security.JWTAuthenticationFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;

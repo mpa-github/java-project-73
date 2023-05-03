@@ -3,7 +3,6 @@ package hexlet.code.controller;
 import com.fasterxml.jackson.core.type.TypeReference;
 import hexlet.code.domain.dto.TaskRequestDTO;
 import hexlet.code.domain.dto.TaskResponseDTO;
-import hexlet.code.domain.model.Status;
 import hexlet.code.domain.model.Task;
 import hexlet.code.domain.model.TaskStatus;
 import hexlet.code.domain.model.User;
@@ -54,8 +53,8 @@ class TaskControllerTest {
     private static final String TEST_UPDATED_TASK_DESCRIPTION = "Измененное описание";
     private static final String TEST_EMAIL_1 = "email.1@testmail.com";
     private static final String TEST_EMAIL_2 = "email.2@testmail.com";
-    private static final String TEST_STATUS_NAME_1 = Status.NEW.getName();
-    private static final String TEST_STATUS_NAME_2 = Status.IN_PROGRESS.getName();
+    private static final String TEST_STATUS_NAME_1 = "Новая";
+    private static final String TEST_STATUS_NAME_2 = "В работе";
 
     private User testAuthor;
     private User testExecutor;

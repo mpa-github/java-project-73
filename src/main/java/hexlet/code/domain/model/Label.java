@@ -25,6 +25,10 @@ public class Label {
     public Label() {
     }
 
+    public Label(long id) {
+        this.id = id;
+    }
+
     public Label(String name, Instant createdAt) {
         this.name = name;
         this.createdAt = createdAt;

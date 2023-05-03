@@ -25,6 +25,10 @@ public class TaskStatus {
     public TaskStatus() {
     }
 
+    public TaskStatus(long id) {
+        this.id = id;
+    }
+
     public TaskStatus(String name, Instant createdAt) {
         this.name = name;
         this.createdAt = createdAt;

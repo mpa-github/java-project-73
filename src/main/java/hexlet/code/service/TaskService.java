@@ -2,8 +2,10 @@ package hexlet.code.service;
 
 import com.querydsl.core.types.Predicate;
 import hexlet.code.domain.dto.TaskRequestDTO;
-import hexlet.code.domain.mapper.TaskModelMapper;
+import hexlet.code.domain.model.Label;
 import hexlet.code.domain.model.Task;
+import hexlet.code.domain.model.TaskStatus;
+import hexlet.code.domain.model.User;
 import hexlet.code.exception.NotFoundException;
 import hexlet.code.exception.NotTheOwnerException;
 import hexlet.code.repository.TaskRepository;
@@ -17,11 +19,17 @@ import java.util.List;
 public class TaskService {
 
     private final TaskRepository taskRepository;
-    private final TaskModelMapper taskMapper;
+    private final TaskStatusService statusService;
+    private final LabelService labelService;
+    private final UserService userService;
 
-    public TaskService(TaskRepository taskRepository, TaskModelMapper taskMapper) {
+    public TaskService(TaskRepository taskRepository,
+                       TaskStatusService statusService,
+                       LabelService labelService, UserService userService) {
         this.taskRepository = taskRepository;
-        this.taskMapper = taskMapper;
+        this.statusService = statusService;
+        this.labelService = labelService;
+        this.userService = userService;
     }
 
     public List<Task> findTasksByParams(Predicate predicate) {
@@ -37,14 +45,15 @@ public class TaskService {
     }
 
     public Task createTask(TaskRequestDTO dto, UserDetails authDetails) {
-        Task newTask = taskMapper.toTaskModel(dto, authDetails);
+        Task newTask = buildTask(dto, authDetails);
         return taskRepository.save(newTask);
     }
 
     public Task updateTask(long id, TaskRequestDTO dto, UserDetails authDetails) {
-        Task taskToUpdate = findTaskById(id);
-        validateOwnerByEmail(taskToUpdate.getAuthor().getEmail(), authDetails);
-        taskMapper.updateTaskModel(taskToUpdate, dto, authDetails);
+        Task existedTask = findTaskById(id);
+        validateOwnerByEmail(existedTask.getAuthor().getEmail(), authDetails);
+        Task taskToUpdate = buildTask(dto, authDetails);
+        taskToUpdate.setId(id);
         return taskRepository.save(taskToUpdate);
     }
 
@@ -52,6 +61,20 @@ public class TaskService {
         Task existedTask = findTaskById(id);
         validateOwnerByEmail(existedTask.getAuthor().getEmail(), authDetails);
         taskRepository.delete(existedTask);
+    }
+
+    private Task buildTask(TaskRequestDTO dto, UserDetails authDetails) {
+        String name = dto.getName();
+        String description = dto.getDescription();
+        TaskStatus status = statusService.findStatusById(dto.getTaskStatusId());
+        User author = userService.findUserByEmail(authDetails.getUsername());
+        User executor = userService.findUserById(dto.getExecutorId());
+        List<Label> labels = labelService.findAllLabelsById(dto.getLabelIds());
+        return new Task.Builder(name, status, author)
+            .setDescription(description)
+            .setExecutor(executor)
+            .setLabels(labels)
+            .createTask();
     }
 
     // TODO We can use @PreAuthorize instead

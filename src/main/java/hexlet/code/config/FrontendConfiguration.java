@@ -10,11 +10,11 @@ import org.springframework.web.servlet.resource.PathResourceResolver;
 import java.io.IOException;
 
 @Configuration
-public class WebConfiguration implements WebMvcConfigurer {
+public class FrontendConfiguration implements WebMvcConfigurer {
 
     private final String baseApiPath;
 
-    public WebConfiguration(@Value("${base.url}") String baseApiPath) {
+    public FrontendConfiguration(@Value("${base.url}") String baseApiPath) {
         this.baseApiPath = baseApiPath;
     }
 

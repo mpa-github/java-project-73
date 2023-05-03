@@ -32,9 +32,12 @@ public class UserService {
         return userRepository.findAllByOrderByIdAsc();
     }
 
-    public User findUserById(long id) {
-        return userRepository.findUserById(id)
-            .orElseThrow(() -> new NotFoundException("User with id='%d' not found!".formatted(id)));
+    public User findUserById(Long id) {
+        if (id != null) {
+            return userRepository.findUserById(id)
+                .orElseThrow(() -> new NotFoundException("User with id='%d' not found!".formatted(id)));
+        }
+        return null;
     }
 
     // TODO For Hibernate request optimization

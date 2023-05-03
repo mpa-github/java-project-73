@@ -38,6 +38,10 @@ public class User {
     public User() {
     }
 
+    public User(long id) {
+        this.id = id;
+    }
+
     public User(String firstName, String lastName, String email, String password, Instant createdAt) {
         this.firstName = firstName;
         this.lastName = lastName;
