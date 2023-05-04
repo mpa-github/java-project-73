@@ -9,20 +9,17 @@ import org.springframework.stereotype.Component;
 public class LabelModelMapper {
 
     public LabelResponseDTO toLabelResponseDTO(final Label label) {
-        final LabelResponseDTO dto = new LabelResponseDTO();
-        dto.setId(label.getId());
-        dto.setName(label.getName());
-        dto.setCreatedAt(label.getCreatedAt());
-        return dto;
+        return new LabelResponseDTO(
+            label.getId(),
+            label.getName(),
+            label.getCreatedAt()
+        );
     }
 
     public Label toLabelModel(final LabelRequestDTO dto) {
-        final Label label = new Label();
-        updateLabelModel(label, dto);
-        return label;
-    }
-
-    public void updateLabelModel(final Label label, final LabelRequestDTO dto) {
-        label.setName(dto.getName());
+        return new Label(
+            dto.getName(),
+            null
+        );
     }
 }

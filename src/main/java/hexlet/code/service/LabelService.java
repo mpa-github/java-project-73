@@ -54,7 +54,7 @@ public class LabelService {
 
     public Label updateLabel(long id, LabelRequestDTO dto) {
         Label labelToUpdate = findLabelById(id);
-        labelMapper.updateLabelModel(labelToUpdate, dto);
+        labelToUpdate.setName(dto.getName());
         return labelRepository.save(labelToUpdate);
     }
 

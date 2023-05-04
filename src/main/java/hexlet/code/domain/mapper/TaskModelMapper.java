@@ -55,7 +55,7 @@ public class TaskModelMapper {
         return dto;
     }
 
-    public Task toTaskLazyModel(final TaskRequestDTO dto) {
+    /*public Task toTaskLazyModel(final TaskRequestDTO dto) {
         final Task task = new Task();
         task.setName(dto.getName());
         task.setDescription(dto.getDescription());
@@ -71,5 +71,5 @@ public class TaskModelMapper {
                 .orElseGet(() -> null)
         );
         return task;
-    }
+    }*/
 }

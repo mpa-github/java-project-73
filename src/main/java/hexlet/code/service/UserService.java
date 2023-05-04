@@ -65,8 +65,10 @@ public class UserService {
         // TODO generate new token after update?
         User userToUpdate = findUserById(id);
         validateOwnerByEmail(userToUpdate.getEmail(), authDetails);
-        userMapper.updateUserModel(userToUpdate, dto);
-        String encodedPassword = bCryptPasswordEncoder.encode(userToUpdate.getPassword());
+        userToUpdate.setFirstName(dto.getFirstName());
+        userToUpdate.setLastName(dto.getLastName());
+        userToUpdate.setEmail(dto.getEmail());
+        String encodedPassword = bCryptPasswordEncoder.encode(dto.getPassword());
         userToUpdate.setPassword(encodedPassword);
         return userRepository.save(userToUpdate);
     }
