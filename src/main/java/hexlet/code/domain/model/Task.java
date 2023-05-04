@@ -19,7 +19,7 @@ import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 
-// TODO Use custom synchronization methods (addLabel / removeLabel) in bidirectional
+// TODO Use custom synchronization methods (addLabel / removeLabel) if bidirectional
 @Entity @Table(name = "tasks")
 public class Task {
 
@@ -40,7 +40,7 @@ public class Task {
     @JoinTable(name = "task_label",
         joinColumns = @JoinColumn(name = "task_id"),
         inverseJoinColumns = @JoinColumn(name = "label_id"))
-    private List<Label> labels = new ArrayList<>(); // TODO (!) List or Set (?)
+    private List<Label> labels = new ArrayList<>();
 
     @ManyToOne(fetch = FetchType.EAGER)
     private User author;

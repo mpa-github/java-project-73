@@ -42,7 +42,7 @@ public class TaskStatusService {
 
     public TaskStatus updateStatus(long id, TaskStatusRequestDTO dto) {
         TaskStatus statusToUpdate = findStatusById(id);
-        statusMapper.updateStatusModel(statusToUpdate, dto);
+        statusToUpdate.setName(dto.getName());
         return statusRepository.save(statusToUpdate);
     }
 

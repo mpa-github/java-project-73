@@ -9,20 +9,17 @@ import org.springframework.stereotype.Component;
 public class TaskStatusModelMapper {
 
     public TaskStatusResponseDTO toTaskStatusResponseDTO(final TaskStatus status) {
-        final TaskStatusResponseDTO dto = new TaskStatusResponseDTO();
-        dto.setId(status.getId());
-        dto.setName(status.getName());
-        dto.setCreatedAt(status.getCreatedAt());
-        return dto;
+        return new TaskStatusResponseDTO(
+            status.getId(),
+            status.getName(),
+            status.getCreatedAt()
+        );
     }
 
     public TaskStatus toTaskStatusModel(final TaskStatusRequestDTO dto) {
-        final TaskStatus status = new TaskStatus();
-        updateStatusModel(status, dto);
-        return status;
-    }
-
-    public void updateStatusModel(final TaskStatus status, final TaskStatusRequestDTO dto) {
-        status.setName(dto.getName());
+        return new TaskStatus(
+            dto.getName(),
+            null
+        );
     }
 }

@@ -8,6 +8,12 @@ public class LabelResponseDTO {
     private String name;
     private Instant createdAt;
 
+    public LabelResponseDTO(long id, String name, Instant createdAt) {
+        this.id = id;
+        this.name = name;
+        this.createdAt = createdAt;
+    }
+
     public long getId() {
         return id;
     }

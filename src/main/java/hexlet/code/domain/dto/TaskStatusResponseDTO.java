@@ -8,6 +8,12 @@ public class TaskStatusResponseDTO {
     private String name;
     private Instant createdAt;
 
+    public TaskStatusResponseDTO(long id, String name, Instant createdAt) {
+        this.id = id;
+        this.name = name;
+        this.createdAt = createdAt;
+    }
+
     public long getId() {
         return id;
     }

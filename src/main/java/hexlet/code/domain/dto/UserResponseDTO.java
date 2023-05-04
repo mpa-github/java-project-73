@@ -10,6 +10,14 @@ public class UserResponseDTO {
     private String lastName;
     private Instant createdAt;
 
+    public UserResponseDTO(long id, String email, String firstName, String lastName, Instant createdAt) {
+        this.id = id;
+        this.email = email;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.createdAt = createdAt;
+    }
+
     public long getId() {
         return id;
     }

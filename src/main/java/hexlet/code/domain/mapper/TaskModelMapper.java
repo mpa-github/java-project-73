@@ -1,19 +1,13 @@
 package hexlet.code.domain.mapper;
 
 import hexlet.code.domain.dto.LabelResponseDTO;
-import hexlet.code.domain.dto.TaskRequestDTO;
 import hexlet.code.domain.dto.TaskResponseDTO;
-import hexlet.code.domain.model.Label;
 import hexlet.code.domain.model.Task;
-import hexlet.code.domain.model.TaskStatus;
-import hexlet.code.domain.model.User;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Component
 public class TaskModelMapper {
@@ -55,7 +49,7 @@ public class TaskModelMapper {
         return dto;
     }
 
-    public Task toTaskLazyModel(final TaskRequestDTO dto) {
+    /*public Task toTaskLazyModel(final TaskRequestDTO dto) {
         final Task task = new Task();
         task.setName(dto.getName());
         task.setDescription(dto.getDescription());
@@ -71,5 +65,5 @@ public class TaskModelMapper {
                 .orElseGet(() -> null)
         );
         return task;
-    }
+    }*/
 }
