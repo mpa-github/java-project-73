@@ -1,7 +1,7 @@
 package hexlet.code.service;
 
 import com.querydsl.core.types.Predicate;
-import hexlet.code.domain.builder.TaskBuilder;
+import hexlet.code.domain.builder.TaskModelBuilder;
 import hexlet.code.domain.dto.TaskRequestDTO;
 import hexlet.code.domain.model.Task;
 import hexlet.code.exception.NotFoundException;
@@ -17,9 +17,9 @@ import java.util.List;
 public class TaskService {
 
     private final TaskRepository taskRepository;
-    private final TaskBuilder taskBuilder;
+    private final TaskModelBuilder taskBuilder;
 
-    public TaskService(TaskRepository taskRepository, TaskBuilder taskBuilder) {
+    public TaskService(TaskRepository taskRepository, TaskModelBuilder taskBuilder) {
         this.taskRepository = taskRepository;
         this.taskBuilder = taskBuilder;
     }
@@ -37,14 +37,32 @@ public class TaskService {
     }
 
     public Task createTask(TaskRequestDTO dto, UserDetails authDetails) {
-        Task newTask = taskBuilder.create(dto, authDetails);
+        Task newTask = taskBuilder
+            .setTask(new Task())
+            .setName(dto.getName())
+            .setDescription(dto.getDescription())
+            .setTaskStatus(dto.getTaskStatusId())
+            .setLabels(dto.getLabelIds())
+            .setAuthor(authDetails.getUsername())
+            .setExecutor(dto.getExecutorId())
+            .build();
+
         return taskRepository.save(newTask);
     }
 
     public Task updateTask(long id, TaskRequestDTO dto, UserDetails authDetails) {
         Task existedTask = findTaskById(id);
         validateOwnerByEmail(existedTask.getAuthor().getEmail(), authDetails);
-        Task updatedTask = taskBuilder.update(existedTask, dto);
+
+        Task updatedTask = taskBuilder
+            .setTask(existedTask)
+            .setName(dto.getName())
+            .setDescription(dto.getDescription())
+            .setTaskStatus(dto.getTaskStatusId())
+            .setLabels(dto.getLabelIds())
+            .setExecutor(dto.getExecutorId())
+            .build();
+
         return taskRepository.save(updatedTask);
     }
 
