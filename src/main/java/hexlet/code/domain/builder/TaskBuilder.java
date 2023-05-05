@@ -6,7 +6,6 @@ import java.util.List;
 
 public interface TaskBuilder {
 
-    TaskBuilder setTask(Task task);
     TaskBuilder setName(String name);
     TaskBuilder setDescription(String description);
     TaskBuilder setTaskStatus(Long taskStatusId);

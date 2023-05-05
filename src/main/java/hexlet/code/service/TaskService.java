@@ -1,7 +1,7 @@
 package hexlet.code.service;
 
 import com.querydsl.core.types.Predicate;
-import hexlet.code.domain.builder.TaskModelBuilder;
+import hexlet.code.domain.builder.TasksFactory;
 import hexlet.code.domain.dto.TaskRequestDTO;
 import hexlet.code.domain.model.Task;
 import hexlet.code.exception.NotFoundException;
@@ -17,11 +17,11 @@ import java.util.List;
 public class TaskService {
 
     private final TaskRepository taskRepository;
-    private final TaskModelBuilder taskBuilder;
+    private final TasksFactory tasksFactory;
 
-    public TaskService(TaskRepository taskRepository, TaskModelBuilder taskBuilder) {
+    public TaskService(TaskRepository taskRepository, TasksFactory tasksFactory) {
         this.taskRepository = taskRepository;
-        this.taskBuilder = taskBuilder;
+        this.tasksFactory = tasksFactory;
     }
 
     public List<Task> findTasksByParams(Predicate predicate) {
@@ -37,8 +37,7 @@ public class TaskService {
     }
 
     public Task createTask(TaskRequestDTO dto, UserDetails authDetails) {
-        Task newTask = taskBuilder
-            .setTask(new Task())
+        Task newTask = tasksFactory.builder(new Task())
             .setName(dto.getName())
             .setDescription(dto.getDescription())
             .setTaskStatus(dto.getTaskStatusId())
@@ -53,8 +52,7 @@ public class TaskService {
     public Task updateTask(long id, TaskRequestDTO dto, UserDetails authDetails) {
         Task existedTask = findTaskById(id);
         validateOwnerByEmail(existedTask.getAuthor().getEmail(), authDetails);
-        Task updatedTask = taskBuilder
-            .setTask(existedTask)
+        Task updatedTask = tasksFactory.builder(existedTask)
             .setName(dto.getName())
             .setDescription(dto.getDescription())
             .setTaskStatus(dto.getTaskStatusId())

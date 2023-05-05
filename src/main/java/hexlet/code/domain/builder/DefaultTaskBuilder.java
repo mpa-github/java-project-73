@@ -7,45 +7,35 @@ import hexlet.code.domain.model.User;
 import hexlet.code.service.LabelService;
 import hexlet.code.service.TaskStatusService;
 import hexlet.code.service.UserService;
-import org.springframework.stereotype.Component;
 
 import java.util.List;
 
-@Component
-public class TaskModelBuilder implements TaskBuilder {
+public class DefaultTaskBuilder implements TaskBuilder {
 
     private final TaskStatusService statusService;
     private final LabelService labelService;
     private final UserService userService;
-    //private boolean isTaskSet = false;
-    private Task task;
+    private final Task task;
 
 
-    public TaskModelBuilder(TaskStatusService statusService,
-                            LabelService labelService,
-                            UserService userService) {
+    public DefaultTaskBuilder(TaskStatusService statusService,
+                              LabelService labelService,
+                              UserService userService,
+                              Task task) {
         this.statusService = statusService;
         this.labelService = labelService;
         this.userService = userService;
-    }
-
-    @Override
-    public TaskBuilder setTask(Task newTask) {
-        this.task = newTask;
-        //this.isTaskSet = true;
-        return this;
+        this.task = task;
     }
 
     @Override
     public TaskBuilder setName(String name) {
-        //checkState();
         this.task.setName(name);
         return this;
     }
 
     @Override
     public TaskBuilder setDescription(String description) {
-        //checkState();
         if (description != null) {
             this.task.setDescription(description);
         }
@@ -54,7 +44,6 @@ public class TaskModelBuilder implements TaskBuilder {
 
     @Override
     public TaskBuilder setTaskStatus(Long taskStatusId) {
-        //checkState();
         TaskStatus status = statusService.findStatusById(taskStatusId);
         this.task.setTaskStatus(status);
         return this;
@@ -62,7 +51,6 @@ public class TaskModelBuilder implements TaskBuilder {
 
     @Override
     public TaskBuilder setLabels(List<Long> labelIds) {
-        //checkState();
         if (labelIds != null) {
             List<Label> labels = labelService.findAllLabelsById(labelIds);
             this.task.setLabels(labels);
@@ -72,7 +60,6 @@ public class TaskModelBuilder implements TaskBuilder {
 
     @Override
     public TaskBuilder setAuthor(String authorEmail) {
-        //checkState();
         User author = userService.findUserByEmail(authorEmail);
         this.task.setAuthor(author);
         return this;
@@ -80,7 +67,6 @@ public class TaskModelBuilder implements TaskBuilder {
 
     @Override
     public TaskBuilder setExecutor(Long executorId) {
-        //checkState();
         if (executorId != null) {
             User executor = userService.findUserById(executorId);
             this.task.setExecutor(executor);
@@ -90,13 +76,6 @@ public class TaskModelBuilder implements TaskBuilder {
 
     @Override
     public Task build() {
-        //this.isTaskSet = false;
         return this.task;
     }
-
-    /*private void checkState() {
-        if (!this.isTaskSet) {
-            throw new IllegalStateException("Task is not set!");
-        }
-    }*/
 }
