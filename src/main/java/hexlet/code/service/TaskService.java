@@ -53,7 +53,6 @@ public class TaskService {
     public Task updateTask(long id, TaskRequestDTO dto, UserDetails authDetails) {
         Task existedTask = findTaskById(id);
         validateOwnerByEmail(existedTask.getAuthor().getEmail(), authDetails);
-
         Task updatedTask = taskBuilder
             .setTask(existedTask)
             .setName(dto.getName())
