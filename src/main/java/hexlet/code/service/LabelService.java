@@ -27,7 +27,7 @@ public class LabelService {
         return labelRepository.findAllByOrderByIdAsc();
     }
 
-    // TODO Should we throw an ex if don't find all ids?
+    // TODO Check if don't find all ids
     public List<Label> findAllLabelsById(List<Long> labelIds) {
         if (labelIds != null) {
             return labelRepository.findAllById(labelIds);

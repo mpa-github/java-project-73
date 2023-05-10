@@ -25,13 +25,8 @@ public class TaskStatus {
     public TaskStatus() {
     }
 
-    public TaskStatus(long id) {
-        this.id = id;
-    }
-
-    public TaskStatus(String name, Instant createdAt) {
+    public TaskStatus(String name) {
         this.name = name;
-        this.createdAt = createdAt;
     }
 
     public long getId() {

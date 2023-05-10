@@ -61,8 +61,6 @@ public class UserService {
     }
 
     public User updateUser(long id, UserRequestDTO dto, UserDetails authDetails) {
-        // TODO Can we update email (Spring Username)?
-        // TODO generate new token after update?
         User userToUpdate = findUserById(id);
         validateOwnerByEmail(userToUpdate.getEmail(), authDetails);
         userToUpdate.setFirstName(dto.getFirstName());

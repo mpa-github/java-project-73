@@ -17,8 +17,8 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 // TODO Validate dto field names (can me extra now)
 
@@ -38,9 +38,9 @@ public class TaskStatusController {
     @GetMapping
     public List<TaskStatusResponseDTO> findAllStatuses() {
         List<TaskStatus> existedStatuses = statusService.findAllStatuses();
-        List<TaskStatusResponseDTO> statusDTOList = new ArrayList<>();
-        existedStatuses.forEach(status -> statusDTOList.add(statusMapper.toTaskStatusResponseDTO(status)));
-        return statusDTOList;
+        return existedStatuses.stream()
+            .map(statusMapper::toTaskStatusResponseDTO)
+            .collect(Collectors.toList());
     }
 
     @GetMapping(path = "/{id}")

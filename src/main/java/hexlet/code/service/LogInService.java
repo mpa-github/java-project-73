@@ -24,6 +24,7 @@ public class LogInService {
     public String authenticate(LogInRequestDTO logInDTO) {
         User existedUser = userRepository.findUserByEmailIgnoreCase(logInDTO.getEmail())
             .orElseThrow(() -> new SignInException("Sign in failed. User not found!"));
+
         String passwordToCheck = logInDTO.getPassword();
         if (!bCryptPasswordEncoder.matches(passwordToCheck, existedUser.getPassword())) {
             throw new SignInException("Sign in failed. Incorrect password!");

@@ -5,9 +5,9 @@ import hexlet.code.domain.dto.TaskResponseDTO;
 import hexlet.code.domain.model.Task;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Component
 public class TaskModelMapper {
@@ -32,15 +32,16 @@ public class TaskModelMapper {
             dto.setExecutor(userMapper.toUserResponseDTO(task.getExecutor()));
         }
         if (task.getLabels() != null) {
-            List<LabelResponseDTO> labelsDTO = new ArrayList<>();
-            task.getLabels().forEach(label -> labelsDTO.add(labelMapper.toLabelResponseDTO(label)));
-            labelsDTO.sort(Comparator.comparing(LabelResponseDTO::getId));
+            List<LabelResponseDTO> labelsDTO = task.getLabels()
+                .stream()
+                .map(labelMapper::toLabelResponseDTO)
+                .sorted(Comparator.comparing(LabelResponseDTO::getId))
+                .collect(Collectors.toList());
             dto.setLabels(labelsDTO);
         }
         if (task.getDescription() != null) {
             dto.setDescription(task.getDescription());
         }
-
         dto.setId(task.getId());
         dto.setAuthor(userMapper.toUserResponseDTO(task.getAuthor()));
         dto.setTaskStatus(taskStatusMapper.toTaskStatusResponseDTO(task.getTaskStatus()));

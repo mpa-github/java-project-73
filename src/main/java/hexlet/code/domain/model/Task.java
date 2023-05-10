@@ -59,15 +59,13 @@ public class Task {
                 TaskStatus taskStatus,
                 List<Label> labels,
                 User author,
-                User executor,
-                Instant createdAt) {
+                User executor) {
         this.name = name;
         this.description = description;
         this.taskStatus = taskStatus;
         this.labels = labels;
         this.author = author;
         this.executor = executor;
-        this.createdAt = createdAt;
     }
 
     public long getId() {

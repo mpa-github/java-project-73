@@ -25,13 +25,8 @@ public class Label {
     public Label() {
     }
 
-    public Label(long id) {
-        this.id = id;
-    }
-
-    public Label(String name, Instant createdAt) {
+    public Label(String name) {
         this.name = name;
-        this.createdAt = createdAt;
     }
 
     public long getId() {

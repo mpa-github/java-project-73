@@ -50,7 +50,6 @@ public class JWTAuthenticationFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request,
                                     HttpServletResponse response,
                                     FilterChain filterChain) throws ServletException, IOException {
-        // TODO Try to find better way to inject RequestMatcher from WebSecurityConfig
         if (ignoredPaths != null && ignoredPaths.matches(request)) {
             filterChain.doFilter(request, response);
             return;
@@ -58,7 +57,7 @@ public class JWTAuthenticationFilter extends OncePerRequestFilter {
 
         String authHeader = request.getHeader(AUTHORIZATION);
         if (authHeader == null/* || !authHeader.startsWith(TOKEN_TYPE_NAME)*/) {
-            Exception jwtEx = new JWTValidationException("Authorization header is empty or incorrect!");
+            Exception jwtEx = new JWTValidationException("Authorization header is empty!");
             resolver.resolveException(request, response, null, jwtEx);
             return;
         }
@@ -73,8 +72,6 @@ public class JWTAuthenticationFilter extends OncePerRequestFilter {
         }
 
         String email = (String) claims.get("email");
-        SecurityContext securityContext = SecurityContextHolder.getContext();
-        // TODO Should we add 'if (!email.isBlank() && securityContext.getAuthentication() == null)' ?
         UserDetails userDetails;
         try {
             userDetails = appUserDetailsService.loadUserByUsername(email);
@@ -83,6 +80,8 @@ public class JWTAuthenticationFilter extends OncePerRequestFilter {
             resolver.resolveException(request, response, null, jwtEx);
             return;
         }
+
+        SecurityContext securityContext = SecurityContextHolder.getContext();
         UsernamePasswordAuthenticationToken springAuthToken = buildSpringAuthToken(userDetails);
         springAuthToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
         securityContext.setAuthentication(springAuthToken);

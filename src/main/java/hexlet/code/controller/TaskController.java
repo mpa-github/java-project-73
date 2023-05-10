@@ -21,8 +21,8 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("${base.url}" + "/tasks")
@@ -39,9 +39,9 @@ public class TaskController {
     @GetMapping
     public List<TaskResponseDTO> findTasksByParams(@QuerydslPredicate(root = Task.class) Predicate predicate) {
         List<Task> existedTasks = taskService.findTasksByParams(predicate);
-        List<TaskResponseDTO> taskDTOList = new ArrayList<>();
-        existedTasks.forEach(task -> taskDTOList.add(taskMapper.toTaskResponseDTO(task)));
-        return taskDTOList;
+        return existedTasks.stream()
+            .map(taskMapper::toTaskResponseDTO)
+            .collect(Collectors.toList());
     }
 
     @GetMapping(path = "/{id}")

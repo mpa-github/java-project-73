@@ -22,8 +22,8 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 // TODO Validate dto field names (can be extra fields now)
 
@@ -46,9 +46,9 @@ public class UserController {
     @GetMapping
     public List<UserResponseDTO> findAllUsers() {
         List<User> existedUsers = userService.findAllUsers();
-        List<UserResponseDTO> userDTOList = new ArrayList<>();
-        existedUsers.forEach(user -> userDTOList.add(userMapper.toUserResponseDTO(user)));
-        return userDTOList;
+        return existedUsers.stream()
+            .map(userMapper::toUserResponseDTO)
+            .collect(Collectors.toList());
     }
 
     @Operation(summary = "Get specific user by his id")

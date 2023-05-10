@@ -18,8 +18,7 @@ public class TaskStatusModelMapper {
 
     public TaskStatus toTaskStatusModel(final TaskStatusRequestDTO dto) {
         return new TaskStatus(
-            dto.getName(),
-            null
+            dto.getName()
         );
     }
 }

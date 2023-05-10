@@ -1,6 +1,5 @@
 package hexlet.code.domain.builder;
 
-
 import hexlet.code.domain.model.Task;
 import hexlet.code.service.LabelService;
 import hexlet.code.service.TaskStatusService;

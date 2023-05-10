@@ -23,8 +23,7 @@ public class UserModelMapper {
             dto.getFirstName(),
             dto.getLastName(),
             dto.getEmail().toLowerCase(),
-            dto.getPassword(),
-            null
+            dto.getPassword()
         );
     }
 }

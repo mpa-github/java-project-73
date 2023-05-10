@@ -17,8 +17,8 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("${base.url}" + "/labels")
@@ -36,9 +36,9 @@ public class LabelController {
     @GetMapping
     public List<LabelResponseDTO> findAllLabels() {
         List<Label> existedLabels = labelService.findAllLabels();
-        List<LabelResponseDTO> labelDTOList = new ArrayList<>();
-        existedLabels.forEach(label -> labelDTOList.add(labelMapper.toLabelResponseDTO(label)));
-        return labelDTOList;
+        return existedLabels.stream()
+            .map(labelMapper::toLabelResponseDTO)
+            .collect(Collectors.toList());
     }
 
     @GetMapping(path = "/{id}")

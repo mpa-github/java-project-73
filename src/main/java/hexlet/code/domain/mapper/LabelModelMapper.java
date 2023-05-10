@@ -18,8 +18,7 @@ public class LabelModelMapper {
 
     public Label toLabelModel(final LabelRequestDTO dto) {
         return new Label(
-            dto.getName(),
-            null
+            dto.getName()
         );
     }
 }
