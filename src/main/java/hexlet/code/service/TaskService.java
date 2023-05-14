@@ -10,10 +10,12 @@ import hexlet.code.repository.TaskRepository;
 import org.springframework.data.domain.Sort;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 @Service
+@Transactional(readOnly = true)
 public class TaskService {
 
     private final TaskRepository taskRepository;
@@ -36,6 +38,7 @@ public class TaskService {
             .orElseThrow(() -> new NotFoundException("Task with id='%d' not found!".formatted(id)));
     }
 
+    @Transactional
     public Task createTask(TaskRequestDTO dto, UserDetails authDetails) {
         Task newTask = tasksFactory.builder(new Task())
             .setName(dto.getName())
@@ -49,20 +52,21 @@ public class TaskService {
         return taskRepository.save(newTask);
     }
 
+    @Transactional
     public Task updateTask(long id, TaskRequestDTO dto, UserDetails authDetails) {
         Task existedTask = findTaskById(id);
         validateOwnerByEmail(existedTask.getAuthor().getEmail(), authDetails);
-        Task updatedTask = tasksFactory.builder(existedTask)
+
+        return tasksFactory.builder(existedTask)
             .setName(dto.getName())
             .setDescription(dto.getDescription())
             .setTaskStatus(dto.getTaskStatusId())
             .setLabels(dto.getLabelIds())
             .setExecutor(dto.getExecutorId())
             .build();
-
-        return taskRepository.save(updatedTask);
     }
 
+    @Transactional
     public void deleteTask(long id, UserDetails authDetails) {
         Task existedTask = findTaskById(id);
         validateOwnerByEmail(existedTask.getAuthor().getEmail(), authDetails);

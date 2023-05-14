@@ -6,10 +6,12 @@ import hexlet.code.domain.model.TaskStatus;
 import hexlet.code.exception.NotFoundException;
 import hexlet.code.repository.TaskStatusRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 @Service
+@Transactional(readOnly = true)
 public class TaskStatusService {
 
     private final TaskStatusRepository statusRepository;
@@ -35,17 +37,20 @@ public class TaskStatusService {
         return statusRepository.getReferenceById(id);
     }
 
+    @Transactional
     public TaskStatus createStatus(TaskStatusRequestDTO dto) {
         TaskStatus newStatus = statusMapper.toTaskStatusModel(dto);
         return statusRepository.save(newStatus);
     }
 
+    @Transactional
     public TaskStatus updateStatus(long id, TaskStatusRequestDTO dto) {
         TaskStatus statusToUpdate = findStatusById(id);
         statusToUpdate.setName(dto.getName());
-        return statusRepository.save(statusToUpdate);
+        return statusToUpdate;
     }
 
+    @Transactional
     public void deleteStatus(long id) {
         TaskStatus existedStatus = findStatusById(id);
         statusRepository.delete(existedStatus);

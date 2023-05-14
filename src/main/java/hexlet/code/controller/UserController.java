@@ -11,6 +11,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -33,6 +34,7 @@ public class UserController {
 
     private final UserService userService;
     private final UserModelMapper userMapper;
+    //private final UserValidator userValidator;
 
     public UserController(UserService userService, UserModelMapper userMapper) {
         this.userService = userService;
@@ -70,7 +72,9 @@ public class UserController {
     })
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public UserResponseDTO registerUser(@RequestBody @Valid UserRequestDTO dto) {
+    public UserResponseDTO registerUser(@RequestBody @Valid UserRequestDTO dto,
+                                        BindingResult bindingResult) {
+        //userValidator.validate(userMapper.toUserModel(dto), bindingResult);
         User createdUser = userService.createUser(dto);
         return userMapper.toUserResponseDTO(createdUser);
     }

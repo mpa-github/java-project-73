@@ -10,10 +10,12 @@ import hexlet.code.repository.UserRepository;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 @Service
+@Transactional(readOnly = true)
 public class UserService {
 
     private final UserRepository userRepository;
@@ -50,6 +52,7 @@ public class UserService {
             .orElseThrow(() -> new NotFoundException("User with email '%s' not found!".formatted(email)));
     }
 
+    @Transactional
     public User createUser(UserRequestDTO dto) {
         if (userRepository.existsUserByEmailIgnoreCase(dto.getEmail())) {
             throw new UserAlreadyExistException("User already exists!");
@@ -60,6 +63,7 @@ public class UserService {
         return userRepository.save(newUser);
     }
 
+    @Transactional
     public User updateUser(long id, UserRequestDTO dto, UserDetails authDetails) {
         User userToUpdate = findUserById(id);
         validateOwnerByEmail(userToUpdate.getEmail(), authDetails);
@@ -68,9 +72,10 @@ public class UserService {
         userToUpdate.setEmail(dto.getEmail());
         String encodedPassword = bCryptPasswordEncoder.encode(dto.getPassword());
         userToUpdate.setPassword(encodedPassword);
-        return userRepository.save(userToUpdate);
+        return userToUpdate;
     }
 
+    @Transactional
     public void deleteUser(long id, UserDetails authDetails) {
         User existedUser = findUserById(id);
         validateOwnerByEmail(existedUser.getEmail(), authDetails);

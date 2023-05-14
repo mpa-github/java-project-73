@@ -7,8 +7,10 @@ import hexlet.code.repository.UserRepository;
 import hexlet.code.security.JWTUtils;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
+@Transactional(readOnly = true)
 public class LogInService {
 
     private final UserRepository userRepository;

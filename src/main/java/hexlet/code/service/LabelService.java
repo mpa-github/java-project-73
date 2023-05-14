@@ -6,12 +6,14 @@ import hexlet.code.domain.model.Label;
 import hexlet.code.exception.NotFoundException;
 import hexlet.code.repository.LabelRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
+@Transactional(readOnly = true)
 public class LabelService {
 
     private final LabelRepository labelRepository;
@@ -47,17 +49,20 @@ public class LabelService {
             .orElseThrow(() -> new NotFoundException("Label with id='%d' not found!".formatted(id)));
     }
 
+    @Transactional
     public Label createLabel(LabelRequestDTO dto) {
         Label newLabel = labelMapper.toLabelModel(dto);
         return labelRepository.save(newLabel);
     }
 
+    @Transactional
     public Label updateLabel(long id, LabelRequestDTO dto) {
         Label labelToUpdate = findLabelById(id);
         labelToUpdate.setName(dto.getName());
-        return labelRepository.save(labelToUpdate);
+        return labelToUpdate;
     }
 
+    @Transactional
     public void deleteLabel(long id) {
         Label existedLabel = findLabelById(id);
         labelRepository.delete(existedLabel);
